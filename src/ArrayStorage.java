@@ -5,46 +5,49 @@ import java.util.Arrays;
  */
 public class ArrayStorage {
     Resume[] storage = new Resume[10000];
+    public int size;
 
     void clear() {
-        Arrays.fill(storage, null);
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
     }
 
     void save(Resume r) {
         for (int i = 0; i < storage.length; i++) {
             if (storage[i] == null) {
                 storage[i] = r;
+                size++;
                 break;
             }
         }
     }
 
     Resume get(String uuid) {
-        if (uuid.equals("dummy")) {
-            Resume dummy = new Resume();
-            dummy.uuid = "dummy";
-            return dummy;
-        }
         for (Resume element : storage) {
             if (element.uuid.equals(uuid)) {
                 return element;
+            } else if (uuid.equals("dummy")) {
+                return null;
             }
         }
         return null;
     }
 
     void delete(String uuid) {
-
         if (storage[size() - 1].uuid.equals(uuid)) {
             storage[size() - 1] = null;
         } else {
             for (int i = 0; i < size(); i++) {
-                if (storage[i].uuid.equals(uuid)) {
-                    if (size() - (i + 1) >= 0) System.arraycopy(storage, i + 1, storage, i + 1 - 1, size() - (i + 1));
-                    storage[size() - 1] = null;
+                if (storage[i] != null) {
+                    if (storage[i].uuid.equals(uuid)) {
+                        if (size() - (i + 1) >= 0)
+                            System.arraycopy(storage, i + 1, storage, i + 1 - 1, size() - (i + 1));
+                        storage[size() - 1] = null;
+                    }
                 }
             }
         }
+        size--;
     }
 
     /**
@@ -57,12 +60,6 @@ public class ArrayStorage {
     }
 
     int size() {
-        int size = 0;
-        for (Resume resume : storage) {
-            if (resume != null) {
-                size++;
-            }
-        }
         return size;
     }
 }
