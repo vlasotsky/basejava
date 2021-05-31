@@ -19,7 +19,6 @@ public class ArrayStorage {
 
 
     Resume get(String uuid) {
-        System.out.println(Arrays.toString(storage));
         for (int i = 0; i < size; i++) {
             if (storage[i].uuid.equals(uuid)) {
                 return storage[i];
@@ -33,7 +32,6 @@ public class ArrayStorage {
             storage[size - 1] = null;
         } else {
             for (int i = 0; i <= size; i++) {
-                System.out.println(Arrays.toString(storage));
                 if (storage[i].uuid.equals(uuid)) {
                     if (size - (i + 1) >= 0)
                         System.arraycopy(storage, i + 1, storage, i, size - (i + 1));
