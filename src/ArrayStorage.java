@@ -23,26 +23,24 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-        for (Resume element : storage) {
-            if (element.uuid.equals(uuid)) {
-                return element;
-            } else if (uuid.equals("dummy")) {
-                return null;
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid.equals(uuid)) {
+                return storage[i];
             }
         }
         return null;
     }
 
     void delete(String uuid) {
-        if (storage[size() - 1].uuid.equals(uuid)) {
-            storage[size() - 1] = null;
+        if (storage[size - 1].uuid.equals(uuid)) {
+            storage[size - 1] = null;
         } else {
-            for (int i = 0; i < size(); i++) {
+            for (int i = 0; i < size; i++) {
                 if (storage[i] != null) {
                     if (storage[i].uuid.equals(uuid)) {
                         if (size() - (i + 1) >= 0)
-                            System.arraycopy(storage, i + 1, storage, i + 1 - 1, size() - (i + 1));
-                        storage[size() - 1] = null;
+                            System.arraycopy(storage, i + 1, storage, i + 1 - 1, size - (i + 1));
+                        storage[size - 1] = null;
                     }
                 }
             }
@@ -54,8 +52,8 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] arrayResume = new Resume[size()];
-        if (size() >= 0) System.arraycopy(storage, 0, arrayResume, 0, size());
+        Resume[] arrayResume = new Resume[size];
+        if (size >= 0) System.arraycopy(storage, 0, arrayResume, 0, size);
         return arrayResume;
     }
 
