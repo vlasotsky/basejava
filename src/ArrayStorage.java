@@ -13,16 +13,13 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) {
-                storage[i] = r;
-                size++;
-                break;
-            }
-        }
+        storage[size] = r;
+        size++;
     }
 
+
     Resume get(String uuid) {
+        System.out.println(Arrays.toString(storage));
         for (int i = 0; i < size; i++) {
             if (storage[i].uuid.equals(uuid)) {
                 return storage[i];
@@ -35,13 +32,13 @@ public class ArrayStorage {
         if (storage[size - 1].uuid.equals(uuid)) {
             storage[size - 1] = null;
         } else {
-            for (int i = 0; i < size; i++) {
-                if (storage[i] != null) {
-                    if (storage[i].uuid.equals(uuid)) {
-                        if (size - (i + 1) >= 0)
-                            System.arraycopy(storage, i + 1, storage, i + 1 - 1, size - (i + 1));
-                        storage[size - 1] = null;
-                    }
+            for (int i = 0; i <= size; i++) {
+                System.out.println(Arrays.toString(storage));
+                if (storage[i].uuid.equals(uuid)) {
+                    if (size - (i + 1) >= 0)
+                        System.arraycopy(storage, i + 1, storage, i, size - (i + 1));
+                    storage[size - 1] = null;
+                    break;
                 }
             }
         }
