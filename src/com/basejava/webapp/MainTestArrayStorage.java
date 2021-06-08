@@ -1,4 +1,7 @@
-import java.util.Arrays;
+package com.basejava.webapp;
+
+import com.basejava.webapp.model.Resume;
+import com.basejava.webapp.storage.ArrayStorage;
 
 /**
  * Test for your ArrayStorage implementation
@@ -27,9 +30,7 @@ public class MainTestArrayStorage {
         printAll();
         ARRAY_STORAGE.clear();
         printAll();
-
         System.out.println("Size: " + ARRAY_STORAGE.size());
-
     }
 
     static void printAll() {
