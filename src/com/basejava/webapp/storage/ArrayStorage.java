@@ -17,7 +17,7 @@ public class ArrayStorage {
     }
 
     public void update(Resume resume) {
-        if (isPresent(resume.getUuid(), false)) {
+        if (isPresent(resume.getUuid())) {
             for (int i = 0; i < size; i++) {
                 if (storage[i].getUuid().equals(resume.getUuid())) {
                     storage[i] = resume;
@@ -28,8 +28,11 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (isPresent(r.getUuid(), true)) {
-            return;
+        for (int i = 0; i < size; i++) {
+            if (storage[i].getUuid().equals(r.getUuid())) {
+                System.out.println("ID " + r.getUuid() + " already exists.");
+                return;
+            }
         }
         if (size == storage.length) {
             System.out.println("Storage is full");
@@ -40,7 +43,7 @@ public class ArrayStorage {
     }
 
     public Resume get(String uuid) {
-        if (isPresent(uuid, false)) {
+        if (isPresent(uuid)) {
             for (int i = 0; i < size; i++) {
                 if (storage[i].getUuid().equals(uuid)) {
                     return storage[i];
@@ -51,7 +54,7 @@ public class ArrayStorage {
     }
 
     public void delete(String uuid) {
-        if (isPresent(uuid, false)) {
+        if (isPresent(uuid)) {
             if (storage[size - 1].getUuid().equals(uuid)) {
                 storage[size - 1] = null;
             } else {
@@ -79,32 +82,19 @@ public class ArrayStorage {
         return size;
     }
 
-    public <T> boolean isPresent(T element, boolean ifExists) {
-        if (element instanceof String) {
-            for (int i = 0; i < size; i++) {
+    public <T> boolean isPresent(T element) {
+        for (int i = 0; i < size; i++) {
+            if (element instanceof String) {
                 if (storage[i].getUuid().equals(element)) {
-                    if (ifExists) {
-                        System.out.println("ID " + element + " already exists");
-                    }
+                    return true;
+                }
+            } else if (element instanceof Resume) {
+                if (storage[i].getUuid().equals(((Resume) element).getUuid())) {
                     return true;
                 }
             }
-            if (!ifExists) {
-                System.out.println("ID " + element + " does not exist.");
-            }
-        } else if (element instanceof Resume) {
-            if (Arrays.asList(storage).contains(element)) {
-                if (ifExists) {
-                    System.out.println("ID " + element + " already exists");
-                }
-                return true;
-            } else {
-                if (!ifExists) {
-                    System.out.println(((Resume) element).getUuid() + " does not exist.");
-                }
-                return false;
-            }
         }
+        System.out.println("ID " + element + " does not exist.");
         return false;
     }
 }
