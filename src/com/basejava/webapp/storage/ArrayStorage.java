@@ -18,7 +18,8 @@ public class ArrayStorage {
 
     public void update(Resume resume) {
         try {
-            storage[indexFound(resume)] = resume;
+            String idToFind = resume.getUuid();
+            storage[indexFound(idToFind)] = resume;
             System.out.println("ID " + resume.getUuid() + " was updated.");
         } catch (Exception e) {
             System.out.println("ID " + resume.getUuid() + " was not found.");
@@ -26,11 +27,10 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
+        String idToFind = r.getUuid();
         if (size == storage.length) {
             System.out.println("Storage is full");
-            return;
-        }
-        if (indexFound(r) == -1) {
+        } else if (indexFound(idToFind) == -1) {
             storage[size] = r;
             size++;
         } else {
@@ -66,15 +66,6 @@ public class ArrayStorage {
 
     public int size() {
         return size;
-    }
-
-    public int indexFound(Resume resume) {
-        for (int i = 0; i < size; i++) {
-            if (resume.getUuid().equals(storage[i].getUuid())) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     public int indexFound(String uuid) {
