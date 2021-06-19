@@ -17,20 +17,21 @@ public class ArrayStorage {
     }
 
     public void update(Resume resume) {
-        try {
-            String idToFind = resume.getUuid();
-            storage[indexFound(idToFind)] = resume;
-            System.out.println("ID " + resume.getUuid() + " was updated.");
-        } catch (Exception e) {
+        String uuid = resume.getUuid();
+        int foundIndex = findIndex(uuid);
+        if (foundIndex == -1) {
             System.out.println("ID " + resume.getUuid() + " was not found.");
+        } else {
+            storage[findIndex(uuid)] = resume;
+            System.out.println("ID " + resume.getUuid() + " was updated.");
         }
     }
 
     public void save(Resume r) {
-        String idToFind = r.getUuid();
+        String uuid = r.getUuid();
         if (size == storage.length) {
             System.out.println("Storage is full");
-        } else if (indexFound(idToFind) == -1) {
+        } else if (findIndex(uuid) == -1) {
             storage[size] = r;
             size++;
         } else {
@@ -39,21 +40,23 @@ public class ArrayStorage {
     }
 
     public Resume get(String uuid) {
-        try {
-            return storage[indexFound(uuid)];
-        } catch (Exception e) {
+        int foundIndex = findIndex(uuid);
+        if (foundIndex == -1) {
             System.out.println("ID " + uuid + " was not found.");
-            return null;
+        } else {
+            return storage[foundIndex];
         }
+        return null;
     }
 
     public void delete(String uuid) {
-        try {
-            if (size - indexFound(uuid) >= 0)
-                System.arraycopy(storage, indexFound(uuid) + 1, storage, indexFound(uuid), size - indexFound(uuid));
-            size--;
-        } catch (Exception e) {
+        int foundIndex = findIndex(uuid);
+        if (foundIndex == -1) {
             System.out.println("ID " + uuid + " was not found.");
+        } else {
+            if (size - foundIndex >= 0)
+                System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - foundIndex);
+            size--;
         }
     }
 
@@ -68,7 +71,7 @@ public class ArrayStorage {
         return size;
     }
 
-    public int indexFound(String uuid) {
+    private int findIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
