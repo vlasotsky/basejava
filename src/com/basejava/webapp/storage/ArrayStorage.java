@@ -55,8 +55,9 @@ public class ArrayStorage {
         if (foundIndex == -1) {
             System.out.println("ID " + uuid + " was not found.");
         } else {
-            if (size - foundIndex >= 0)
+            if (size - foundIndex >= 0) {
                 System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - foundIndex);
+            }
             size--;
         }
     }
