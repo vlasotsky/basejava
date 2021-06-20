@@ -20,22 +20,23 @@ public class ArrayStorage {
         String uuid = resume.getUuid();
         int foundIndex = findIndex(uuid);
         if (foundIndex == -1) {
-            System.out.println("ID " + resume.getUuid() + " was not found.");
+            System.out.println("ID " + uuid + " was not found.");
         } else {
-            storage[findIndex(uuid)] = resume;
-            System.out.println("ID " + resume.getUuid() + " was updated.");
+            storage[foundIndex] = resume;
+            System.out.println("ID " + uuid + " was updated.");
         }
     }
 
-    public void save(Resume r) {
-        String uuid = r.getUuid();
+    public void save(Resume resume) {
+        String uuid = resume.getUuid();
+        int foundIndex = findIndex(uuid);
         if (size == storage.length) {
             System.out.println("Storage is full");
-        } else if (findIndex(uuid) == -1) {
-            storage[size] = r;
+        } else if (foundIndex == -1) {
+            storage[size] = resume;
             size++;
         } else {
-            System.out.println("ID " + r.getUuid() + " already exists.");
+            System.out.println("ID " + uuid + " already exists.");
         }
     }
 
