@@ -7,8 +7,10 @@ import java.util.Arrays;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage {
-    private final Resume[] storage = new Resume[10_000];
+public class ArrayStorage implements Storage {
+    private static final int STORAGE_LIMIT = 10_000;
+
+    private final Resume[] storage = new Resume[STORAGE_LIMIT];
     private int size;
 
     public void clear() {
@@ -44,22 +46,19 @@ public class ArrayStorage {
         int foundIndex = findIndex(uuid);
         if (foundIndex == -1) {
             System.out.println("ID " + uuid + " was not found.");
-        } else {
-            return storage[foundIndex];
+            return null;
         }
-        return null;
+        return storage[foundIndex];
     }
 
     public void delete(String uuid) {
         int foundIndex = findIndex(uuid);
         if (foundIndex == -1) {
             System.out.println("ID " + uuid + " was not found.");
-        } else {
-            if (size - foundIndex >= 0) {
-                System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - foundIndex);
-            }
-            size--;
+        } else if (size - foundIndex >= 0) {
+            System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - foundIndex);
         }
+        size--;
     }
 
     /**
