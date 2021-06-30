@@ -7,7 +7,7 @@ import com.basejava.webapp.storage.SortedArrayStorage;
  * Test for your ArrayStorage implementation
  */
 public class MainTestArrayStorage {
-    //    static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
+//        static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
     static final SortedArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
 
     public static void main(String[] args) {

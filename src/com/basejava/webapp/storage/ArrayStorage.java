@@ -1,60 +1,9 @@
 package com.basejava.webapp.storage;
 
-import com.basejava.webapp.model.Resume;
-
-import java.util.Arrays;
-
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage extends AbstractArrayStorage {
-
-    public void clear() {
-        Arrays.fill(storage, 0, size, null);
-        size = 0;
-    }
-
-    public void update(Resume resume) {
-        String uuid = resume.getUuid();
-        int foundIndex = findIndex(uuid);
-        if (foundIndex == -1) {
-            System.out.println("ID " + uuid + " was not found.");
-        } else {
-            storage[foundIndex] = resume;
-            System.out.println("ID " + uuid + " was updated.");
-        }
-    }
-
-    public void save(Resume resume) {
-        String uuid = resume.getUuid();
-        int foundIndex = findIndex(uuid);
-        if (size == storage.length) {
-            System.out.println("Storage is full");
-        } else if (foundIndex == -1) {
-            storage[size] = resume;
-            size++;
-        } else {
-            System.out.println("ID " + uuid + " already exists.");
-        }
-    }
-
-
-    public void delete(String uuid) {
-        int foundIndex = findIndex(uuid);
-        if (foundIndex == -1) {
-            System.out.println("ID " + uuid + " was not found.");
-        } else if (size - foundIndex >= 0) {
-            System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - foundIndex);
-        }
-        size--;
-    }
-
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
-    }
 
     protected int findIndex(String uuid) {
         for (int i = 0; i < size; i++) {
