@@ -8,17 +8,9 @@ import com.basejava.webapp.model.Resume;
 public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
-    public void save(Resume resume) {
-        String uuid = resume.getUuid();
-        int foundIndex = findIndex(uuid);
-        if (size == storage.length) {
-            System.out.println("Storage is full");
-        } else if (foundIndex < 0) {
-            storage[size] = resume;
-            size++;
-        } else {
-            System.out.println("ID " + uuid + " already exists.");
-        }
+    protected void saveToArray(int foundIndex, Resume resume) {
+        storage[size] = resume;
+        size++;
     }
 
     protected int findIndex(String uuid) {
