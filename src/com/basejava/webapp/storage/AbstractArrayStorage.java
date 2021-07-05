@@ -5,7 +5,7 @@ import com.basejava.webapp.model.Resume;
 import java.util.Arrays;
 
 public abstract class AbstractArrayStorage implements Storage {
-    protected static final int STORAGE_LIMIT = 10_000;
+    protected static final int STORAGE_LIMIT = 3;
 
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size;
@@ -45,9 +45,8 @@ public abstract class AbstractArrayStorage implements Storage {
         int foundIndex = findIndex(uuid);
         if (foundIndex < 0) {
             System.out.println("ID " + uuid + " was not found.");
-        } else {
-            if (size - foundIndex >= 0)
-                System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - foundIndex);
+        } else if (size - foundIndex >= 0) {
+            System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - (foundIndex + 1));
             size--;
         }
     }
