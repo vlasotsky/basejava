@@ -10,7 +10,6 @@ public class ArrayStorage extends AbstractArrayStorage {
     @Override
     protected void saveToArray(int foundIndex, Resume resume) {
         storage[size] = resume;
-        size++;
     }
 
     protected int findIndex(String uuid) {

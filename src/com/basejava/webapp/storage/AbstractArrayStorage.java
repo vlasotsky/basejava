@@ -33,6 +33,7 @@ public abstract class AbstractArrayStorage implements Storage {
             System.out.println("Storage is full");
         } else if (foundIndex < 0) {
             saveToArray(foundIndex, resume);
+            size++;
         } else {
             System.out.println("ID " + uuid + " already exists.");
         }
@@ -45,9 +46,8 @@ public abstract class AbstractArrayStorage implements Storage {
         if (foundIndex < 0) {
             System.out.println("ID " + uuid + " was not found.");
         } else {
-            for (int i = foundIndex; i < size; i++) {
-                storage[i] = storage[i + 1];
-            }
+            if (size - foundIndex >= 0)
+                System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - foundIndex);
             size--;
         }
     }
