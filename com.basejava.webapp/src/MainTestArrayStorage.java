@@ -1,7 +1,5 @@
-package com.basejava.webapp;
-
-import com.basejava.webapp.model.Resume;
-import com.basejava.webapp.storage.SortedArrayStorage;
+import model.Resume;
+import storage.SortedArrayStorage;
 
 /**
  * Test for your ArrayStorage implementation
