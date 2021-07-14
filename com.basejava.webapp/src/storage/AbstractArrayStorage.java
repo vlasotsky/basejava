@@ -8,8 +8,7 @@ import model.Resume;
 import java.util.Arrays;
 
 public abstract class AbstractArrayStorage implements Storage {
-//    protected static final int STORAGE_LIMIT = 10_000;
-    protected static final int STORAGE_LIMIT = 5;
+    protected static final int STORAGE_LIMIT = 10_000;
 
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size;
@@ -24,7 +23,6 @@ public abstract class AbstractArrayStorage implements Storage {
         int foundIndex = findIndex(uuid);
         if (foundIndex < 0) {
             throw new NotExistingStorageException(uuid);
-//            System.out.println("ID " + uuid + " was not found.");
         } else {
             storage[foundIndex] = resume;
             System.out.println("ID " + uuid + " was updated.");
@@ -36,13 +34,11 @@ public abstract class AbstractArrayStorage implements Storage {
         int foundIndex = findIndex(uuid);
         if (size == storage.length) {
             throw new StorageException("Storage is full", uuid);
-//            System.out.println("Storage is full");
         } else if (foundIndex < 0) {
             saveToArray(foundIndex, resume);
             size++;
         } else {
             throw new ExistingStorageException(uuid);
-//            System.out.println("ID " + uuid + " already exists.");
         }
     }
 
@@ -52,7 +48,6 @@ public abstract class AbstractArrayStorage implements Storage {
         int foundIndex = findIndex(uuid);
         if (foundIndex < 0) {
             throw new NotExistingStorageException(uuid);
-//            System.out.println("ID " + uuid + " was not found.");
         } else if (size - foundIndex >= 0) {
             System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - (foundIndex + 1));
             size--;
@@ -67,8 +62,6 @@ public abstract class AbstractArrayStorage implements Storage {
         int foundIndex = findIndex(uuid);
         if (foundIndex < 0) {
             throw new NotExistingStorageException(uuid);
-//            System.out.println("ID " + uuid + " was not found.");
-//            return null;
         }
         return storage[foundIndex];
     }

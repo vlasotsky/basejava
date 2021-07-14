@@ -9,12 +9,4 @@ public class SortedArrayStorageTest extends AbstractArrayStorageTest{
     public SortedArrayStorageTest() {
         super(new SortedArrayStorage());
     }
-
-    @Test
-    public void findIndex() {
-    }
-
-    @Test
-    public void saveToArray() {
-    }
 }
