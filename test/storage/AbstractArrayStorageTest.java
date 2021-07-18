@@ -1,14 +1,11 @@
 package storage;
 
-import exception.ExistingStorageException;
-import exception.NotExistingStorageException;
 import exception.StorageException;
 import model.Resume;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-public class AbstractArrayStorageTest extends AbstractStorageTest {
+public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
 
     public AbstractArrayStorageTest(Storage storage) {
         super(storage);
@@ -23,7 +20,6 @@ public class AbstractArrayStorageTest extends AbstractStorageTest {
             }
         } catch (StorageException exception) {
             Assert.fail("Storage had been filled completely before it was expected.");
-
         }
         storage.save(new Resume());
     }
