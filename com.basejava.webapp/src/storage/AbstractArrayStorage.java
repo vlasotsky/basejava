@@ -42,7 +42,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     @Override
     protected void saveToStorage(int foundIndex, Resume resume) {
         String uuid = resume.getUuid();
-        if (size == storage.length) {
+        if (size == storage.length && foundIndex < 0) {
             throw new StorageException("Storage is full", uuid);
         } else {
             saveToArray(foundIndex, resume);
