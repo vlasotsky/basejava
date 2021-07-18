@@ -1,12 +1,13 @@
 import model.Resume;
-import storage.SortedArrayStorage;
+import storage.ArrayStorage;
 
 /**
  * Test for your ArrayStorage implementation
  */
 public class MainTestArrayStorage {
-//        static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
-    static final SortedArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
+        static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
+//    static final SortedArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
+//    static final ListStorage ARRAY_STORAGE = new ListStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume("uuid1");

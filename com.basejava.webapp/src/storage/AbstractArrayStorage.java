@@ -1,13 +1,11 @@
 package storage;
 
-import exception.ExistingStorageException;
-import exception.NotExistingStorageException;
 import exception.StorageException;
 import model.Resume;
 
 import java.util.Arrays;
 
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10_000;
 
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
@@ -18,52 +16,8 @@ public abstract class AbstractArrayStorage implements Storage {
         size = 0;
     }
 
-    public final void update(Resume resume) {
-        String uuid = resume.getUuid();
-        int foundIndex = findIndex(uuid);
-        if (foundIndex < 0) {
-            throw new NotExistingStorageException(uuid);
-        } else {
-            storage[foundIndex] = resume;
-            System.out.println("ID " + uuid + " was updated.");
-        }
-    }
-
-    public final void save(Resume resume) {
-        String uuid = resume.getUuid();
-        int foundIndex = findIndex(uuid);
-        if (size == storage.length) {
-            throw new StorageException("Storage is full", uuid);
-        } else if (foundIndex < 0) {
-            saveToArray(foundIndex, resume);
-            size++;
-        } else {
-            throw new ExistingStorageException(uuid);
-        }
-    }
-
-    protected abstract void saveToArray(int foundIndex, Resume resume);
-
-    public final void delete(String uuid) {
-        int foundIndex = findIndex(uuid);
-        if (foundIndex < 0) {
-            throw new NotExistingStorageException(uuid);
-        } else if (size - foundIndex >= 0) {
-            System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - (foundIndex + 1));
-            size--;
-        }
-    }
-
     public int size() {
         return size;
-    }
-
-    public final Resume get(String uuid) {
-        int foundIndex = findIndex(uuid);
-        if (foundIndex < 0) {
-            throw new NotExistingStorageException(uuid);
-        }
-        return storage[foundIndex];
     }
 
     public Resume[] getAll() {
@@ -71,4 +25,29 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     protected abstract int findIndex(String uuid);
+
+    @Override
+    protected void deleteFromStorage(int foundIndex) {
+        if (size - foundIndex >= 0) {
+            System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - (foundIndex + 1));
+            size--;
+        }
+    }
+
+    @Override
+    protected Resume getFromStorage(int index) {
+        return storage[index];
+    }
+
+    @Override
+    protected void saveToStorage(int foundIndex, Resume resume) {
+        String uuid = resume.getUuid();
+        if (size == storage.length) {
+            throw new StorageException("Storage is full", uuid);
+        } else {
+            saveToArray(foundIndex, resume);
+        }
+    }
+
+    protected abstract void saveToArray(int foundIndex, Resume resume);
 }

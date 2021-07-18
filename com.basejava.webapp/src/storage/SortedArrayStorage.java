@@ -12,9 +12,14 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void saveToArray(int foundIndex, Resume resume) {
-        int neededIndex = Math.abs(foundIndex) - 1;
-        System.arraycopy(storage, neededIndex, storage, neededIndex + 1, size - neededIndex);
-        storage[neededIndex] = resume;
+        if (foundIndex < 0) {
+            int neededIndex = Math.abs(foundIndex) - 1;
+            System.arraycopy(storage, neededIndex, storage, neededIndex + 1, size - neededIndex);
+            storage[neededIndex] = resume;
+            size++;
+        } else {
+            storage[foundIndex] = resume;
+        }
     }
 }
 
