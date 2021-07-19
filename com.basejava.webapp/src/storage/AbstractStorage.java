@@ -5,8 +5,6 @@ import exception.NotExistingStorageException;
 import model.Resume;
 
 public abstract class AbstractStorage implements Storage {
-//    @Override
-//    public abstract void clear();
 
     @Override
     public final void update(Resume resume) {
@@ -14,10 +12,9 @@ public abstract class AbstractStorage implements Storage {
         int foundIndex = findIndex(uuid);
         if (foundIndex < 0) {
             throw new NotExistingStorageException(uuid);
-        } else {
-            saveToStorage(foundIndex, resume);
-            System.out.println("ID " + uuid + " was updated.");
         }
+        updateStorage(foundIndex, resume);
+        System.out.println("ID " + uuid + " was updated.");
     }
 
     @Override
@@ -37,7 +34,7 @@ public abstract class AbstractStorage implements Storage {
         if (foundIndex < 0) {
             throw new NotExistingStorageException(uuid);
         }
-        return getFromStorage(foundIndex);
+        return getFromStorage(foundIndex, uuid);
     }
 
     @Override
@@ -45,22 +42,17 @@ public abstract class AbstractStorage implements Storage {
         int foundIndex = findIndex(uuid);
         if (foundIndex < 0) {
             throw new NotExistingStorageException(uuid);
-        } else {
-            deleteFromStorage(foundIndex);
         }
+        deleteFromStorage(foundIndex, uuid);
     }
-
-//    @Override
-//    public abstract Resume[] getAll();
-
-//    @Override
-//    public abstract int size();
 
     protected abstract int findIndex(String uuid);
 
     protected abstract void saveToStorage(int foundIndex, Resume resume);
 
-    protected abstract void deleteFromStorage(int foundIndex);
+    protected abstract void deleteFromStorage(int foundIndex, String uuid);
 
-    protected abstract Resume getFromStorage(int index);
+    protected abstract Resume getFromStorage(int index, String uuid);
+
+    protected abstract void updateStorage(int foundIndex, Resume resume);
 }

@@ -27,7 +27,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected abstract int findIndex(String uuid);
 
     @Override
-    protected void deleteFromStorage(int foundIndex) {
+    protected void deleteFromStorage(int foundIndex, String uuid) {
         if (size - foundIndex >= 0) {
             System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - (foundIndex + 1));
             size--;
@@ -35,7 +35,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getFromStorage(int index) {
+    protected Resume getFromStorage(int index, String uuid) {
         return storage[index];
     }
 
@@ -46,7 +46,13 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
             throw new StorageException("Storage is full", uuid);
         } else {
             saveToArray(foundIndex, resume);
+            size++;
         }
+    }
+
+    @Override
+    protected void updateStorage(int foundIndex, Resume resume) {
+        storage[foundIndex] = resume;
     }
 
     protected abstract void saveToArray(int foundIndex, Resume resume);

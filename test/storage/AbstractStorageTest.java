@@ -18,6 +18,7 @@ public abstract class AbstractStorageTest {
         this.storage = storage;
     }
 
+
     @Before
     public void setUp() {
         storage.clear();

@@ -30,20 +30,21 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected void saveToStorage(int foundIndex, Resume resume) {
-        if (foundIndex < 0) {
-            storage.add(resume);
-        } else {
-            storage.set(foundIndex, resume);
-        }
+        storage.add(resume);
     }
 
     @Override
-    protected void deleteFromStorage(int foundIndex) {
+    protected void deleteFromStorage(int foundIndex, String uuid) {
         storage.remove(foundIndex);
     }
 
     @Override
-    protected Resume getFromStorage(int index) {
+    protected Resume getFromStorage(int index, String uuid) {
         return storage.get(index);
+    }
+
+    @Override
+    protected void updateStorage(int foundIndex, Resume resume) {
+        storage.set(foundIndex, resume);
     }
 }
