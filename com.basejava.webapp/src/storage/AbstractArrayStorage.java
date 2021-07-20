@@ -7,7 +7,6 @@ import java.util.Arrays;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10_000;
-
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size;
 
@@ -35,19 +34,18 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getFromStorage(int index, String uuid) {
-        return storage[index];
+    protected Resume getFromStorage(int foundIndex, String uuid) {
+        return storage[foundIndex];
     }
 
     @Override
     protected void saveToStorage(int foundIndex, Resume resume) {
         String uuid = resume.getUuid();
-        if (size == storage.length && foundIndex < 0) {
+        if (size == storage.length) {
             throw new StorageException("Storage is full", uuid);
-        } else {
-            saveToArray(foundIndex, resume);
-            size++;
         }
+        saveToArray(foundIndex, resume);
+        size++;
     }
 
     @Override

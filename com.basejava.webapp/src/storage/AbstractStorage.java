@@ -21,11 +21,10 @@ public abstract class AbstractStorage implements Storage {
     public void save(Resume resume) {
         String uuid = resume.getUuid();
         int foundIndex = findIndex(uuid);
-        if (foundIndex < 0) {
-            saveToStorage(foundIndex, resume);
-        } else {
+        if (foundIndex >= 0) {
             throw new ExistingStorageException(uuid);
         }
+        saveToStorage(foundIndex, resume);
     }
 
     @Override
@@ -52,7 +51,7 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void deleteFromStorage(int foundIndex, String uuid);
 
-    protected abstract Resume getFromStorage(int index, String uuid);
+    protected abstract Resume getFromStorage(int foundIndex, String uuid);
 
     protected abstract void updateStorage(int foundIndex, Resume resume);
 }

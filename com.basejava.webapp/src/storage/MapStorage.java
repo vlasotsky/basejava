@@ -23,7 +23,7 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getFromStorage(int index, String uuid) {
+    protected Resume getFromStorage(int foundIndex, String uuid) {
         return storage.get(uuid);
     }
 
