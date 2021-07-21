@@ -23,19 +23,20 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return Arrays.copyOf(storage, size);
     }
 
-    protected abstract int findIndex(String uuid);
+    protected abstract Object findIndex(String uuid);
 
     @Override
-    protected void deleteFromStorage(int foundIndex, String uuid) {
-        if (size - foundIndex >= 0) {
-            System.arraycopy(storage, foundIndex + 1, storage, foundIndex, size - (foundIndex + 1));
+    protected void deleteFromStorage(Object searchKey) {
+//        searchKey = (int) searchKey;
+        if (size - (int)searchKey >= 0) {
+            System.arraycopy(storage, (int)searchKey + 1, storage, (int)searchKey, size - ((int)searchKey + 1));
             size--;
         }
     }
 
     @Override
-    protected Resume getFromStorage(int foundIndex, String uuid) {
-        return storage[foundIndex];
+    protected Resume getFromStorage(Object searchKey) {
+        return storage[(int) searchKey];
     }
 
     @Override

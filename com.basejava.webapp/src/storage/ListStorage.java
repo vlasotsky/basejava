@@ -24,7 +24,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected int findIndex(String uuid) {
+    protected Object findIndex(String uuid) {
         return storage.indexOf(new Resume(uuid));
     }
 
@@ -34,13 +34,13 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void deleteFromStorage(int foundIndex, String uuid) {
-        storage.remove(foundIndex);
+    protected void deleteFromStorage(Object searchKey) {
+        storage.remove((int) searchKey);
     }
 
     @Override
-    protected Resume getFromStorage(int foundIndex, String uuid) {
-        return storage.get(foundIndex);
+    protected Resume getFromStorage(Object searchKey) {
+        return storage.get((int) searchKey);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package storage;
+
 import model.Resume;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -7,8 +9,8 @@ public class MapStorage extends AbstractStorage {
     private final Map<String, Resume> storage = new LinkedHashMap<>();
 
     @Override
-    protected int findIndex(String uuid) {
-        return storage.containsKey(uuid) ? 1 : -1;
+    protected Object findIndex(String uuid) {
+        return storage.containsKey(uuid) ? Integer.parseInt(uuid.replaceAll("[^0-9]", "")) : -1;
     }
 
     @Override
@@ -18,13 +20,13 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void deleteFromStorage(int foundIndex, String uuid) {
-        storage.remove(uuid);
+    protected void deleteFromStorage(Object searchKey) {
+        storage.remove("uuid" + searchKey);
     }
 
     @Override
-    protected Resume getFromStorage(int foundIndex, String uuid) {
-        return storage.get(uuid);
+    protected Resume getFromStorage(Object searchKey) {
+        return storage.get("uuid" + searchKey);
     }
 
     @Override
