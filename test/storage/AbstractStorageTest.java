@@ -10,9 +10,9 @@ import org.junit.Test;
 public abstract class AbstractStorageTest {
     protected Storage storage;
 
-    private static final String UUID_1 = "uuid1";
-    private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
+    private static final String UUID_1 = "uuid_1";
+    private static final String UUID_2 = "uuid_2";
+    private static final String UUID_3 = "uuid_3";
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -47,14 +47,14 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = NotExistingStorageException.class)
     public void updateNotExisting() {
-        storage.update(new Resume("uuid8"));
+        storage.update(new Resume("uuid_8"));
     }
 
     @Test
     public void save() {
-        Resume resume = new Resume("uuid5");
-        storage.save(new Resume("uuid5"));
-        Assert.assertEquals(resume, storage.get("uuid5"));
+        Resume resume = new Resume("uuid_5");
+        storage.save(new Resume("uuid_5"));
+        Assert.assertEquals(resume, storage.get("uuid_5"));
     }
 
     @Test(expected = ExistingStorageException.class)
@@ -72,7 +72,7 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = NotExistingStorageException.class)
     public void deleteNotExisting() {
-        storage.delete("uuid8");
+        storage.delete("uuid_8");
     }
 
     @Test

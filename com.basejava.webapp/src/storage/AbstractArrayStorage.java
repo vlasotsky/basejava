@@ -1,5 +1,7 @@
 package storage;
 
+import exception.ExistingStorageException;
+import exception.NotExistingStorageException;
 import exception.StorageException;
 import model.Resume;
 
@@ -23,11 +25,10 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return Arrays.copyOf(storage, size);
     }
 
-    protected abstract Object findIndex(String uuid);
+    protected abstract Object findSearchKey(String uuid);
 
     @Override
     protected void deleteFromStorage(Object searchKey) {
-//        searchKey = (int) searchKey;
         if (size - (int) searchKey >= 0) {
             System.arraycopy(storage, (int) searchKey + 1, storage, (int) searchKey, size - ((int) searchKey + 1));
             size--;
@@ -40,19 +41,31 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void saveToStorage(int foundIndex, Resume resume) {
+    protected void saveToStorage(Resume resume) {
         String uuid = resume.getUuid();
+        Integer searchKey = (Integer) findSearchKey(uuid);
         if (size == storage.length) {
             throw new StorageException("Storage is full", uuid);
+        } else if (searchKey >= 0) {
+            throw new ExistingStorageException(uuid);
         }
-        saveToArray(foundIndex, resume);
+        saveToArray(searchKey, resume);
         size++;
     }
 
     @Override
-    protected void updateStorage(int foundIndex, Resume resume) {
-        storage[foundIndex] = resume;
+    protected void updateStorage(Object searchKey, Resume resume) {
+        storage[(int) searchKey] = resume;
     }
 
     protected abstract void saveToArray(int foundIndex, Resume resume);
+
+    @Override
+    protected Object checkIfAbsent(String uuid) {
+        Object searchKey = findSearchKey(uuid);
+        if ((int) searchKey < 0) {
+            throw new NotExistingStorageException(uuid);
+        }
+        return searchKey;
+    }
 }
