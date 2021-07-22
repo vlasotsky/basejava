@@ -30,7 +30,7 @@ public abstract class AbstractStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         Object searchKey = findIndex(uuid);
-        if (searchKey instanceof Integer && (int) searchKey < 0) {
+        if ((int) searchKey < 0) {
             throw new NotExistingStorageException(uuid);
         }
         return getFromStorage(searchKey);

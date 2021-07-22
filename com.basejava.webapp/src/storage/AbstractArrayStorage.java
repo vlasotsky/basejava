@@ -28,8 +28,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     @Override
     protected void deleteFromStorage(Object searchKey) {
 //        searchKey = (int) searchKey;
-        if (size - (int)searchKey >= 0) {
-            System.arraycopy(storage, (int)searchKey + 1, storage, (int)searchKey, size - ((int)searchKey + 1));
+        if (size - (int) searchKey >= 0) {
+            System.arraycopy(storage, (int) searchKey + 1, storage, (int) searchKey, size - ((int) searchKey + 1));
             size--;
         }
     }
