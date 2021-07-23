@@ -1,8 +1,7 @@
 package storage;
 
-import exception.ExistingStorageException;
-import exception.NotExistingStorageException;
 import model.Resume;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +29,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void saveToStorage(Resume resume) {
-        String uuid = resume.getUuid();
-        Integer searchKey = (Integer) findSearchKey(uuid);
-        if (searchKey >= 0) {
-            throw new ExistingStorageException(uuid);
-        }
+    protected void saveToStorage(Object searchIndex, Resume resume) {
         storage.add(resume);
     }
 
@@ -52,14 +46,5 @@ public class ListStorage extends AbstractStorage {
     @Override
     protected void updateStorage(Object searchKey, Resume resume) {
         storage.set((int) searchKey, resume);
-    }
-
-    @Override
-    protected Object checkIfAbsent(String uuid) {
-        Object searchKey = findSearchKey(uuid);
-        if ((int) searchKey < 0) {
-            throw new NotExistingStorageException(uuid);
-        }
-        return searchKey;
     }
 }

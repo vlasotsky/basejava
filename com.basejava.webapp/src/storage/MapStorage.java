@@ -1,9 +1,7 @@
 package storage;
 
-import exception.ExistingStorageException;
 import exception.NotExistingStorageException;
 import model.Resume;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -16,11 +14,8 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void saveToStorage(Resume resume) {
+    protected void saveToStorage(Object searchIndex, Resume resume) {
         String uuid = resume.getUuid();
-        if (findSearchKey(uuid) != null) {
-            throw new ExistingStorageException(uuid);
-        }
         storage.put(uuid, resume);
     }
 
@@ -41,15 +36,6 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object checkIfAbsent(String uuid) {
-        Object searchKey = findSearchKey(uuid);
-        if (searchKey == null) {
-            throw new NotExistingStorageException(uuid);
-        }
-        return searchKey;
-    }
-
-    @Override
     public void clear() {
         storage.clear();
     }
@@ -62,5 +48,14 @@ public class MapStorage extends AbstractStorage {
     @Override
     public int size() {
         return storage.size();
+    }
+
+    @Override
+    protected Object checkIfAbsent(String uuid) {
+        Object searchKey = findSearchKey(uuid);
+        if (searchKey == null) {
+            throw new NotExistingStorageException(uuid);
+        }
+        return searchKey;
     }
 }
