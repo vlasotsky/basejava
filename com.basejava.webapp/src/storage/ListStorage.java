@@ -1,6 +1,5 @@
 package storage;
 
-import exception.ExistingStorageException;
 import model.Resume;
 
 import java.util.ArrayList;
@@ -31,9 +30,6 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected void saveToStorage(Object searchKey, Resume resume) {
-        if ((int) searchKey >= 0) {
-            throw new ExistingStorageException(resume.getUuid());
-        }
         storage.add(resume);
     }
 
@@ -50,5 +46,10 @@ public class ListStorage extends AbstractStorage {
     @Override
     protected void updateStorage(Object searchKey, Resume resume) {
         storage.set((int) searchKey, resume);
+    }
+
+    @Override
+    protected boolean checkIfAbsent(Object searchKey) {
+        return (int) searchKey < 0;
     }
 }

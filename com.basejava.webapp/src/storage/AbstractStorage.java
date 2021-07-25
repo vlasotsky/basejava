@@ -1,5 +1,6 @@
 package storage;
 
+import exception.ExistingStorageException;
 import exception.NotExistingStorageException;
 import model.Resume;
 
@@ -8,7 +9,11 @@ public abstract class AbstractStorage implements Storage {
     @Override
     public final void update(Resume resume) {
         String uuid = resume.getUuid();
-        updateStorage(checkIfAbsent(uuid), resume);
+        Object searchKey = findSearchKey(uuid);
+        if (checkIfAbsent(searchKey)) {
+            throw new NotExistingStorageException(uuid);
+        }
+        updateStorage(searchKey, resume);
         System.out.println("ID " + uuid + " was updated.");
     }
 
@@ -16,17 +21,28 @@ public abstract class AbstractStorage implements Storage {
     public void save(Resume resume) {
         String uuid = resume.getUuid();
         Object searchKey = findSearchKey(uuid);
+        if (!checkIfAbsent(searchKey)) {
+            throw new ExistingStorageException(uuid);
+        }
         saveToStorage(searchKey, resume);
     }
 
     @Override
     public Resume get(String uuid) {
-        return getFromStorage(checkIfAbsent(uuid));
+        Object searchKey = findSearchKey(uuid);
+        if (checkIfAbsent(searchKey)) {
+            throw new NotExistingStorageException(uuid);
+        }
+        return getFromStorage(searchKey);
     }
 
     @Override
     public void delete(String uuid) {
-        deleteFromStorage(checkIfAbsent(uuid));
+        Object searchKey = findSearchKey(uuid);
+        if (checkIfAbsent(searchKey)) {
+            throw new NotExistingStorageException(uuid);
+        }
+        deleteFromStorage(searchKey);
     }
 
     protected abstract Object findSearchKey(String uuid);
@@ -39,12 +55,5 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void updateStorage(Object searchKey, Resume resume);
 
-        protected Object checkIfAbsent(String uuid) {
-        Object searchKey = findSearchKey(uuid);
-        if ((int) searchKey < 0) {
-            throw new NotExistingStorageException(uuid);
-        }
-        return searchKey;
-    }
-//    protected abstract Object checkIfAbsent(String uuid);
+    protected abstract boolean checkIfAbsent(Object searchKey);
 }

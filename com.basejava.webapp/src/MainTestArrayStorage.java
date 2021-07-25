@@ -8,10 +8,10 @@ import storage.SortedArrayStorage;
  * Test for your ArrayStorage implementation
  */
 public class MainTestArrayStorage {
-    static final MapStorage ARRAY_STORAGE = new MapStorage();
+//    static final MapStorage ARRAY_STORAGE = new MapStorage();
 //    static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
 //    static final SortedArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
-//    static final ListStorage ARRAY_STORAGE = new ListStorage();
+    static final ListStorage ARRAY_STORAGE = new ListStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume("uuid1");
@@ -25,7 +25,6 @@ public class MainTestArrayStorage {
         ARRAY_STORAGE.save(new Resume("uuid4"));
 
 //        ARRAY_STORAGE.save(r1);
-
         System.out.println("Get r1: " + ARRAY_STORAGE.get(r1.getUuid()));
         System.out.println("Size: " + ARRAY_STORAGE.size());
 //        System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));

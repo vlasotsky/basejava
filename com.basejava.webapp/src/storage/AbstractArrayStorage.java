@@ -1,6 +1,5 @@
 package storage;
 
-import exception.ExistingStorageException;
 import exception.StorageException;
 import model.Resume;
 
@@ -45,8 +44,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         String uuid = resume.getUuid();
         if (size == storage.length) {
             throw new StorageException("Storage is full", uuid);
-        } else if ((int) searchKey >= 0) {
-            throw new ExistingStorageException(uuid);
         }
         saveToArray((int) searchKey, resume);
         size++;
@@ -58,4 +55,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     protected abstract void saveToArray(int foundIndex, Resume resume);
+
+    @Override
+    protected boolean checkIfAbsent(Object searchKey) {
+        return (int) searchKey < 0;
+    }
 }
