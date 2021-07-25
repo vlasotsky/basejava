@@ -1,5 +1,6 @@
 package storage;
 
+import exception.ExistingStorageException;
 import model.Resume;
 
 import java.util.ArrayList;
@@ -29,7 +30,10 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void saveToStorage(Object searchIndex, Resume resume) {
+    protected void saveToStorage(Object searchKey, Resume resume) {
+        if ((int) searchKey >= 0) {
+            throw new ExistingStorageException(resume.getUuid());
+        }
         storage.add(resume);
     }
 

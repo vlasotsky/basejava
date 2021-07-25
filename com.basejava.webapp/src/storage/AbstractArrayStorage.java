@@ -1,7 +1,9 @@
 package storage;
 
+import exception.ExistingStorageException;
 import exception.StorageException;
 import model.Resume;
+
 import java.util.Arrays;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
@@ -26,8 +28,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     protected void deleteFromStorage(Object searchKey) {
-        if (size - (int) searchKey >= 0) {
-            System.arraycopy(storage, (int) searchKey + 1, storage, (int) searchKey, size - ((int) searchKey + 1));
+        Integer keyInUse = (Integer) searchKey;
+        if (size - keyInUse >= 0) {
+            System.arraycopy(storage, keyInUse + 1, storage, keyInUse, size - (keyInUse + 1));
             size--;
         }
     }
@@ -38,12 +41,14 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void saveToStorage(Object searchIndex, Resume resume) {
+    protected void saveToStorage(Object searchKey, Resume resume) {
         String uuid = resume.getUuid();
         if (size == storage.length) {
             throw new StorageException("Storage is full", uuid);
+        } else if ((int) searchKey >= 0) {
+            throw new ExistingStorageException(uuid);
         }
-        saveToArray((int) searchIndex, resume);
+        saveToArray((int) searchKey, resume);
         size++;
     }
 

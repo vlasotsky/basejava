@@ -1,5 +1,8 @@
 import model.Resume;
+import storage.ArrayStorage;
+import storage.ListStorage;
 import storage.MapStorage;
+import storage.SortedArrayStorage;
 
 /**
  * Test for your ArrayStorage implementation

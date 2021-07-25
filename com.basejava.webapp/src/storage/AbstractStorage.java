@@ -1,6 +1,5 @@
 package storage;
 
-import exception.ExistingStorageException;
 import exception.NotExistingStorageException;
 import model.Resume;
 
@@ -17,10 +16,6 @@ public abstract class AbstractStorage implements Storage {
     public void save(Resume resume) {
         String uuid = resume.getUuid();
         Object searchKey = findSearchKey(uuid);
-        if ((searchKey instanceof Integer && (int) searchKey >= 0) ||
-                (searchKey instanceof String)) {
-            throw new ExistingStorageException(uuid);
-        }
         saveToStorage(searchKey, resume);
     }
 
@@ -44,11 +39,12 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void updateStorage(Object searchKey, Resume resume);
 
-    protected Object checkIfAbsent(String uuid) {
+        protected Object checkIfAbsent(String uuid) {
         Object searchKey = findSearchKey(uuid);
         if ((int) searchKey < 0) {
             throw new NotExistingStorageException(uuid);
         }
         return searchKey;
     }
+//    protected abstract Object checkIfAbsent(String uuid);
 }
