@@ -1,14 +1,11 @@
 import model.Resume;
-import storage.ArrayStorage;
 import storage.ListStorage;
-import storage.MapStorage;
-import storage.SortedArrayStorage;
 
 /**
  * Test for your ArrayStorage implementation
  */
 public class MainTestArrayStorage {
-//    static final MapStorage ARRAY_STORAGE = new MapStorage();
+    //    static final MapStorage ARRAY_STORAGE = new MapStorage();
 //    static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
 //    static final SortedArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
     static final ListStorage ARRAY_STORAGE = new ListStorage();
@@ -31,7 +28,7 @@ public class MainTestArrayStorage {
 
         ARRAY_STORAGE.update(new Resume("uuid1"));
 //        ARRAY_STORAGE.update(new Resume("uuid7"));
-
+//        ARRAY_STORAGE.delete("uuid20");
         printAll();
         ARRAY_STORAGE.delete(r2.getUuid());
         printAll();
