@@ -1,8 +1,8 @@
 package storage;
 
 import model.Resume;
-
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage {
@@ -14,13 +14,14 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return storage.toArray(new Resume[0]);
+    public int size() {
+        return storage.size();
     }
 
     @Override
-    public int size() {
-        return storage.size();
+    public List<Resume> getAllSorted() {
+        storage.sort(Comparator.comparing(Resume::getFullName));
+        return storage;
     }
 
     @Override
@@ -29,22 +30,22 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void saveToStorage(Object searchKey, Resume resume) {
+    protected void doSave(Object searchKey, Resume resume) {
         storage.add(resume);
     }
 
     @Override
-    protected void deleteFromStorage(Object searchKey) {
+    protected void doDelete(Object searchKey) {
         storage.remove((int) searchKey);
     }
 
     @Override
-    protected Resume getFromStorage(Object searchKey) {
+    protected Resume doGet(Object searchKey) {
         return storage.get((int) searchKey);
     }
 
     @Override
-    protected void updateStorage(Object searchKey, Resume resume) {
+    protected void doUpdate(Object searchKey, Resume resume) {
         storage.set((int) searchKey, resume);
     }
 
