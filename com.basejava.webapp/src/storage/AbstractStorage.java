@@ -4,7 +4,17 @@ import exception.ExistingStorageException;
 import exception.NotExistingStorageException;
 import model.Resume;
 
+import java.util.Comparator;
+import java.util.List;
+
 public abstract class AbstractStorage implements Storage {
+
+    public static final Comparator<Resume> STORAGE_COMPARATOR = (o1, o2) -> {
+        if (o1.getFullName().equals(o2.getFullName())) {
+            return o1.getUuid().compareTo(o2.getUuid());
+        }
+        return o1.getFullName().compareTo(o2.getFullName());
+    };
 
     protected abstract Object findSearchKey(String uuid);
 
@@ -16,7 +26,15 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void doUpdate(Object searchKey, Resume resume);
 
-    protected abstract boolean checkIfAbsent(Object searchKey);
+    protected abstract boolean isExist(Object searchKey);
+
+    protected abstract List<Resume> getList();
+
+    public final List<Resume> getAllSorted() {
+        List<Resume> list = getList();
+        list.sort(STORAGE_COMPARATOR);
+        return list;
+    }
 
     @Override
     public final void update(Resume resume) {
@@ -28,8 +46,8 @@ public abstract class AbstractStorage implements Storage {
     @Override
     public void save(Resume resume) {
         String uuid = resume.getUuid();
-        Object searchKey =  findSearchKey(uuid);
-        if (!checkIfAbsent(searchKey)) {
+        Object searchKey = findSearchKey(uuid);
+        if (!isExist(searchKey)) {
             throw new ExistingStorageException(uuid);
         }
         doSave(searchKey, resume);
@@ -47,7 +65,7 @@ public abstract class AbstractStorage implements Storage {
 
     protected Object getSearchKeyIfResumeExists(String uuid) {
         Object searchKey = findSearchKey(uuid);
-        if (checkIfAbsent(searchKey)) {
+        if (isExist(searchKey)) {
             throw new NotExistingStorageException(uuid);
         }
         return searchKey;

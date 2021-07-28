@@ -1,6 +1,7 @@
 package storage;
 
 import model.Resume;
+
 import java.util.*;
 
 public abstract class MapStorage extends AbstractStorage {
@@ -26,7 +27,7 @@ public abstract class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean checkIfAbsent(Object searchKey) {
+    protected boolean isExist(Object searchKey) {
         return searchKey == null;
     }
 
@@ -41,9 +42,7 @@ public abstract class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> list = new ArrayList<>(storage.values());
-        list.sort(Comparator.comparing(Resume::getFullName));
-        return list;
+    protected List<Resume> getList() {
+        return new ArrayList<>(storage.values());
     }
 }

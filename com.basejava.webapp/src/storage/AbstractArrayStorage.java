@@ -23,7 +23,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean checkIfAbsent(Object searchKey) {
+    protected boolean isExist(Object searchKey) {
         return (int) searchKey < 0;
     }
 
@@ -42,15 +42,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
+    protected List<Resume> getList() {
         List<Resume> list = new ArrayList<>(Arrays.asList(storage));
         list.removeAll(Collections.singletonList(null));
-        list.sort((o1, o2) -> {
-            if (o1.getFullName().equals(o2.getFullName())) {
-                return o1.getUuid().compareTo(o2.getUuid());
-            }
-            return o1.getFullName().compareTo(o2.getFullName());
-        });
         return list;
     }
 

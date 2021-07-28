@@ -6,7 +6,9 @@ import model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -16,6 +18,13 @@ public abstract class AbstractStorageTest {
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
+
+//    private final Comparator<Resume> STORAGE_COMPARATOR = new Comparator<Resume>() {
+//        @Override
+//        public int compare(Resume o1, Resume o2) {
+//            return 0;
+//        }
+//    }
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -98,12 +107,7 @@ public abstract class AbstractStorageTest {
             add(new Resume(UUID_2, "David"));
             add(new Resume(UUID_3, "Zoe"));
         }};
-        listToTest.sort((o1, o2) -> {
-            if (o1.getFullName().equals(o2.getFullName())) {
-                return o1.getUuid().compareTo(o2.getUuid());
-            }
-            return o1.getFullName().compareTo(o2.getFullName());
-        });
+        listToTest.sort(AbstractStorage.STORAGE_COMPARATOR);
         Assert.assertEquals(listToTest, storage.getAllSorted());
     }
 }
