@@ -6,6 +6,9 @@ import model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public abstract class AbstractStorageTest {
     protected Storage storage;
@@ -22,9 +25,9 @@ public abstract class AbstractStorageTest {
     @Before
     public void setUp() {
         storage.clear();
-        storage.save(new Resume(UUID_1));
-        storage.save(new Resume(UUID_2));
-        storage.save(new Resume(UUID_3));
+        storage.save(new Resume(UUID_1, "Mary"));
+        storage.save(new Resume(UUID_2, "David"));
+        storage.save(new Resume(UUID_3, "Zoe"));
     }
 
     @Test
@@ -89,9 +92,18 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
-    public void getAll() {
-        Resume[] arrToTest = {new Resume(UUID_1), new Resume(UUID_2), new Resume(UUID_3)};
-        Assert.assertEquals(arrToTest, storage.getAll());
+    public void getAllSorted() {
+        List<Resume> listToTest = new ArrayList<>() {{
+            add(new Resume(UUID_1, "Mary"));
+            add(new Resume(UUID_2, "David"));
+            add(new Resume(UUID_3, "Zoe"));
+        }};
+        listToTest.sort((o1, o2) -> {
+            if (o1.getFullName().equals(o2.getFullName())) {
+                return o1.getUuid().compareTo(o2.getUuid());
+            }
+            return o1.getFullName().compareTo(o2.getFullName());
+        });
+        Assert.assertEquals(listToTest, storage.getAllSorted());
     }
 }

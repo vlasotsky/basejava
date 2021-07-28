@@ -2,9 +2,8 @@ package storage;
 
 import model.Resume;
 
-/**
- * Array based storage for Resumes
- */
+import java.util.List;
+
 public interface Storage {
 
     void clear();
@@ -17,10 +16,7 @@ public interface Storage {
 
     void delete(String uuid);
 
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    Resume[] getAll();
-
     int size();
+
+    List<Resume> getAllSorted();
 }

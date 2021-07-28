@@ -3,12 +3,34 @@ package storage;
 import exception.StorageException;
 import model.Resume;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10_000;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size;
+
+    protected abstract void saveToArray(int foundIndex, Resume resume);
+
+    protected abstract Object findSearchKey(String uuid);
+
+    @Override
+    protected Resume doGet(Object searchKey) {
+        return storage[(int) searchKey];
+    }
+
+    @Override
+    protected boolean checkIfAbsent(Object searchKey) {
+        return (int) searchKey < 0;
+    }
+
+    @Override
+    protected void doUpdate(Object searchKey, Resume resume) {
+        storage[(int) searchKey] = resume;
+    }
 
     public void clear() {
         Arrays.fill(storage, 0, size, null);
@@ -19,45 +41,36 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return size;
     }
 
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
+    @Override
+    public List<Resume> getAllSorted() {
+        List<Resume> list = new ArrayList<>(Arrays.asList(storage));
+        list.removeAll(Collections.singletonList(null));
+        list.sort((o1, o2) -> {
+            if (o1.getFullName().equals(o2.getFullName())) {
+                return o1.getUuid().compareTo(o2.getUuid());
+            }
+            return o1.getFullName().compareTo(o2.getFullName());
+        });
+        return list;
     }
 
-    protected abstract Object findSearchKey(String uuid);
-
     @Override
-    protected void deleteFromStorage(Object searchKey) {
-        Integer keyInUse = (Integer) searchKey;
-        if (size - keyInUse >= 0) {
+    protected void doDelete(Object searchKey) {
+        int keyInUse = (int) searchKey;
+        if (size - (keyInUse + 1) >= 0) {
             System.arraycopy(storage, keyInUse + 1, storage, keyInUse, size - (keyInUse + 1));
-            size--;
         }
+        storage[size - 1] = null;
+        size--;
     }
 
     @Override
-    protected Resume getFromStorage(Object searchKey) {
-        return storage[(int) searchKey];
-    }
-
-    @Override
-    protected void saveToStorage(Object searchKey, Resume resume) {
+    protected void doSave(Object searchKey, Resume resume) {
         String uuid = resume.getUuid();
         if (size == storage.length) {
             throw new StorageException("Storage is full", uuid);
         }
         saveToArray((int) searchKey, resume);
         size++;
-    }
-
-    @Override
-    protected void updateStorage(Object searchKey, Resume resume) {
-        storage[(int) searchKey] = resume;
-    }
-
-    protected abstract void saveToArray(int foundIndex, Resume resume);
-
-    @Override
-    protected boolean checkIfAbsent(Object searchKey) {
-        return (int) searchKey < 0;
     }
 }
