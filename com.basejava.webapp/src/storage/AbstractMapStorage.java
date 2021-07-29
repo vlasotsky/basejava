@@ -4,7 +4,7 @@ import model.Resume;
 
 import java.util.*;
 
-public abstract class MapStorage extends AbstractStorage {
+public abstract class AbstractMapStorage extends AbstractStorage {
 
     protected final Map<String, Resume> storage = new HashMap<>();
 

@@ -2,7 +2,7 @@ package storage;
 
 import model.Resume;
 
-public class MapUuidStorage extends MapStorage {
+public class MapUuidStorage extends AbstractMapStorage {
 
     @Override
     protected Object findSearchKey(String uuid) {

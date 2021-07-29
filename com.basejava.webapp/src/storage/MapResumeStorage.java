@@ -3,7 +3,7 @@ package storage;
 import model.Resume;
 import java.util.Map;
 
-public class MapResumeStorage extends MapStorage {
+public class MapResumeStorage extends AbstractMapStorage {
 
     @Override
     protected Object findSearchKey(String uuid) {

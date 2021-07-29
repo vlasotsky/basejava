@@ -9,12 +9,8 @@ import java.util.List;
 
 public abstract class AbstractStorage implements Storage {
 
-    public static final Comparator<Resume> STORAGE_COMPARATOR = (o1, o2) -> {
-        if (o1.getFullName().equals(o2.getFullName())) {
-            return o1.getUuid().compareTo(o2.getUuid());
-        }
-        return o1.getFullName().compareTo(o2.getFullName());
-    };
+    public static final Comparator<Resume> STORAGE_COMPARATOR =
+            Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
 
     protected abstract Object findSearchKey(String uuid);
 
@@ -63,7 +59,7 @@ public abstract class AbstractStorage implements Storage {
         doDelete(getSearchKeyIfResumeExists(uuid));
     }
 
-    protected Object getSearchKeyIfResumeExists(String uuid) {
+    private Object getSearchKeyIfResumeExists(String uuid) {
         Object searchKey = findSearchKey(uuid);
         if (isExist(searchKey)) {
             throw new NotExistingStorageException(uuid);

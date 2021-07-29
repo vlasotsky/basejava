@@ -2,10 +2,8 @@ package storage;
 
 import exception.StorageException;
 import model.Resume;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
@@ -43,9 +41,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     protected List<Resume> getList() {
-        List<Resume> list = new ArrayList<>(Arrays.asList(storage));
-        list.removeAll(Collections.singletonList(null));
-        return list;
+        return new ArrayList<>(Arrays.asList(Arrays.copyOf(storage, size)));
     }
 
     @Override
