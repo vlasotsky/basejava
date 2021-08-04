@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Organisation extends AbstractSection<Experience, List<Experience>> {
+public class Organisation extends AbstractSection<Experience> {
 
     private final List<Experience> data;
 
@@ -37,11 +37,6 @@ public class Organisation extends AbstractSection<Experience, List<Experience>> 
     }
 
     @Override
-    public String toString() {
-        return data.toString();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Organisation)) return false;
@@ -53,4 +48,15 @@ public class Organisation extends AbstractSection<Experience, List<Experience>> 
     public int hashCode() {
         return Objects.hash(data);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder dataText = new StringBuilder();
+        for (Experience element : data) {
+            dataText.append(element).append('\n');
+        }
+        dataText.deleteCharAt(dataText.length() - 1);
+        return dataText.toString();
+    }
+
 }

@@ -25,58 +25,18 @@ public class Experience {
         this.dateTo = dateTo;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getSubtitle() {
-        return subtitle;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public YearMonth getDateFrom() {
-        return dateFrom;
-    }
-
-    public YearMonth getDateTo() {
-        return dateTo;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setDateFrom(YearMonth dateFrom) {
-        this.dateFrom = dateFrom;
-    }
-
-    public void setDateTo(YearMonth dateTo) {
-        this.dateTo = dateTo;
-    }
-
     @Override
     public String toString() {
         if (this.subtitle == null) {
-            return "\ntitle: " + title + '\n' +
-                    "description: " + description + '\n' +
-                    "dateFrom: " + dateFrom + '\n' +
-                    "dateTo: " + dateTo + '\n';
+            return "Organisation: " + title + '\n' +
+                    "Description: " + description + '\n' +
+                    "DateFrom: " + dateFrom + '\n' +
+                    "DateTo: " + dateTo + '\n';
         }
-        return "\ntitle: " + title + '\n' +
-                "subtitle: " + subtitle + '\n' +
-                "description: " + description + '\n' +
-                "dateFrom: " + dateFrom + '\n' +
-                "dateTo: " + dateTo + '\n';
+        return "Organisation: " + title + '\n' +
+                "Activity: " + subtitle + '\n' +
+                "Description: " + description + '\n' +
+                "DateFrom: " + dateFrom + '\n' +
+                "DateTo: " + dateTo + '\n';
     }
 }

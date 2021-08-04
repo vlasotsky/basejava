@@ -9,7 +9,7 @@ public enum ContactType {
     GITHUB_ACCOUNT("Github account"),
     STACKOVERFLOW_ACCOUNT("StackOverflow account");
 
-    private String title;
+    private final String title;
 
     ContactType(String title) {
         this.title = title;
@@ -17,9 +17,5 @@ public enum ContactType {
 
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 }

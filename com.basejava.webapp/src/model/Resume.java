@@ -9,10 +9,9 @@ public class Resume {
     private final String uuid;
     private final String fullName;
 
-    private final EnumMap<ContactType, String> contacts = new EnumMap<>(ContactType.class);
-    private final EnumMap<SectionType, AbstractSection<?, ?>> sections = new EnumMap<>(SectionType.class);
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private final EnumMap<SectionType, AbstractSection<?>> sections = new EnumMap<>(SectionType.class);
 
-    //constructors:
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
     }
@@ -25,23 +24,13 @@ public class Resume {
         initializeSections();
     }
 
-    //getters:
     public Map<ContactType, String> getAllContacts() {
         return contacts;
     }
 
-    public String getContact(ContactType type) {
-        return this.getAllContacts().get(type);
-    }
-
-    public AbstractSection<?, ?> getSection(SectionType sectionType) {
-        return this.getAllSections().get(sectionType);
-    }
-
-    public EnumMap<SectionType, AbstractSection<?, ?>> getAllSections() {
+    public EnumMap<SectionType, AbstractSection<?>> getAllSections() {
         return sections;
     }
-
 
     public String getUuid() {
         return uuid;
@@ -51,35 +40,10 @@ public class Resume {
         return fullName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Resume resume = (Resume) o;
-        if (!uuid.equals(resume.uuid)) {
-            return false;
+    public void printAllContacts() {
+        for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
         }
-        return fullName.equals(resume.fullName);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = uuid.hashCode();
-        result = 31 * result + fullName.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return uuid + '(' + fullName + ')';
-    }
-
-    public void printContact(ContactType contactType) {
-        System.out.println(this.getAllContacts().get(contactType));
-    }
-
-    public void printSection(SectionType sectionType) {
-        this.getAllSections().get(sectionType).printData();
     }
 
     private void initializeSections() {
@@ -88,7 +52,7 @@ public class Resume {
         }
     }
 
-    public void saveSection(SectionType type, AbstractSection<?, ?> section) {
+    public void saveSection(SectionType type, AbstractSection<?> section) {
         this.getAllSections().put(type, section);
     }
 
@@ -96,19 +60,35 @@ public class Resume {
         this.getAllContacts().put(type, contact);
     }
 
-    public void printAllContacts() {
-        System.out.println();
-        for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Resume)) return false;
+        Resume resume = (Resume) o;
+        return uuid.equals(resume.uuid) && fullName.equals(resume.fullName) && contacts.equals(resume.contacts) && sections.equals(resume.sections);
     }
 
-    public void printAllSections() {
-        System.out.println();
-        for (Map.Entry<SectionType, AbstractSection<?, ?>> entry : sections.entrySet()) {
-            System.out.print(entry.getKey() + ":" + '\n');
-            System.out.println(entry.getValue());
-            System.out.println("________________________________________________________________________");
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, fullName, contacts, sections);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("~Contacts:\n");
+        for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
+            stringBuilder.append(entry.getKey()).append(":\n");
+            stringBuilder.append(entry.getValue()).append('\n');
+        }
+        stringBuilder.append("_____________________________________").append("\n~Sections:\n");
+        for (Map.Entry<SectionType, AbstractSection<?>> entry : sections.entrySet()) {
+            stringBuilder.append(entry.getKey()).append(":\n");
+            stringBuilder.append(entry.getValue()).append('\n');
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        return uuid + '(' + fullName + ')' + '\n'
+                + stringBuilder;
+    }
+
 }

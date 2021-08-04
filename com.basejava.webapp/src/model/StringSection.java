@@ -2,7 +2,7 @@ package model;
 
 import java.util.regex.Pattern;
 
-public class StringSection extends AbstractSection<String, String> {
+public class StringSection extends AbstractSection<String> {
     private String description;
 
     public StringSection(String description) {
@@ -33,7 +33,7 @@ public class StringSection extends AbstractSection<String, String> {
 
     @Override
     public String toString() {
-        return description;
+        return '*' + description + '\n';
     }
 
     private void replaceData(String toBeReplaced, String replacement) {

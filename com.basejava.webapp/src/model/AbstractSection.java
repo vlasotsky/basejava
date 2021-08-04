@@ -1,6 +1,6 @@
 package model;
 
-public abstract class AbstractSection<T, O> {
+public abstract class AbstractSection<T> {
 
     protected abstract void printData();
 

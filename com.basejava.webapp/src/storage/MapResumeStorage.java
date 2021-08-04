@@ -2,18 +2,17 @@ package storage;
 
 import model.Resume;
 
-import java.util.Map;
-
 public class MapResumeStorage extends AbstractMapStorage<Resume> {
 
     @Override
     protected Resume findSearchKey(String uuid) {
-        for (Map.Entry<String, Resume> entry : storage.entrySet()) {
-            if (entry.getValue().getUuid().equals(uuid)) {
-                return entry.getValue();
-            }
-        }
-        return null;
+        return storage.get(uuid);
+//        for (Map.Entry<String, Resume> entry : storage.entrySet()) {
+//            if (entry.getValue().getUuid().equals(uuid)) {
+//                return entry.getValue();
+//            }
+//        }
+//        return null;
     }
 
     @Override
@@ -23,7 +22,7 @@ public class MapResumeStorage extends AbstractMapStorage<Resume> {
 
     @Override
     protected Resume doGet(Resume searchKey) {
-        return storage.get((searchKey).getUuid());
+        return searchKey;
     }
 
     @Override

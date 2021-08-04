@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListSection extends AbstractSection<String, List<String>> {
+public class ListSection extends AbstractSection<String> {
     private final List<String> data = new ArrayList<>();
 
     @Override
@@ -31,6 +31,10 @@ public class ListSection extends AbstractSection<String, List<String>> {
 
     @Override
     public String toString() {
-        return String.valueOf(data);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String element : data) {
+            stringBuilder.append('*').append(element).append('\n');
+        }
+        return stringBuilder.toString();
     }
 }
