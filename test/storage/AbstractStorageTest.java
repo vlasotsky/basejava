@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -18,13 +17,6 @@ public abstract class AbstractStorageTest {
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
-
-//    private final Comparator<Resume> STORAGE_COMPARATOR = new Comparator<Resume>() {
-//        @Override
-//        public int compare(Resume o1, Resume o2) {
-//            return 0;
-//        }
-//    }
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -52,7 +44,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume resumeToTest = new Resume(UUID_1);
+        Resume resumeToTest = new Resume(UUID_1, "Mary");
         storage.update(resumeToTest);
         Assert.assertEquals(resumeToTest, storage.get(UUID_1));
         Assert.assertEquals(3, storage.size());
@@ -60,20 +52,20 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = NotExistingStorageException.class)
     public void updateNotExisting() {
-        storage.update(new Resume("uuid8"));
+        storage.update(new Resume("uuid8", "dummy"));
     }
 
     @Test
     public void save() {
-        Resume resume = new Resume("uuid5");
-        storage.save(new Resume("uuid5"));
-        Assert.assertEquals(resume, storage.get("uuid5"));
+        Resume resume = new Resume("uuid25", "Gabriel");
+        storage.save(new Resume("uuid25", "Gabriel"));
+        Assert.assertEquals(resume, storage.get("uuid25"));
         Assert.assertEquals(4, storage.size());
     }
 
     @Test(expected = ExistingStorageException.class)
     public void saveAlreadyExisting() {
-        storage.save(new Resume(UUID_1));
+        storage.save(new Resume(UUID_1, "Mary"));
     }
 
     @Test(expected = NotExistingStorageException.class)
@@ -91,7 +83,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void get() {
-        Resume resume = new Resume(UUID_1);
+        Resume resume = new Resume(UUID_1, "Mary");
         Assert.assertEquals(resume, storage.get(UUID_1));
     }
 

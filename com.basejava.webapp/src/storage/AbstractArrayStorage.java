@@ -6,28 +6,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10_000;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size;
 
     protected abstract void saveToArray(int foundIndex, Resume resume);
 
-    protected abstract Object findSearchKey(String uuid);
+    protected abstract Integer findSearchKey(String uuid);
 
     @Override
-    protected Resume doGet(Object searchKey) {
-        return storage[(int) searchKey];
+    protected Resume doGet(Integer searchKey) {
+        return storage[searchKey];
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        return (int) searchKey < 0;
+    protected boolean isNotExisting(Integer searchKey) {
+        return searchKey < 0;
     }
 
     @Override
-    protected void doUpdate(Object searchKey, Resume resume) {
-        storage[(int) searchKey] = resume;
+    protected void doUpdate(Integer searchKey, Resume resume) {
+        storage[searchKey] = resume;
     }
 
     public void clear() {
@@ -40,13 +40,13 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected List<Resume> getList() {
+    protected List<Resume> doCopyAll() {
         return new ArrayList<>(Arrays.asList(Arrays.copyOf(storage, size)));
     }
 
     @Override
-    protected void doDelete(Object searchKey) {
-        int keyInUse = (int) searchKey;
+    protected void doDelete(Integer searchKey) {
+        int keyInUse = searchKey;
         if (size - (keyInUse + 1) >= 0) {
             System.arraycopy(storage, keyInUse + 1, storage, keyInUse, size - (keyInUse + 1));
         }
@@ -55,12 +55,12 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Object searchKey, Resume resume) {
+    protected void doSave(Integer searchKey, Resume resume) {
         String uuid = resume.getUuid();
         if (size == storage.length) {
             throw new StorageException("Storage is full", uuid);
         }
-        saveToArray((int) searchKey, resume);
+        saveToArray(searchKey, resume);
         size++;
     }
 }

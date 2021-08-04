@@ -4,30 +4,30 @@ import model.Resume;
 
 import java.util.*;
 
-public abstract class AbstractMapStorage extends AbstractStorage {
+public abstract class AbstractMapStorage<SK> extends AbstractStorage<SK> {
 
     protected final Map<String, Resume> storage = new HashMap<>();
 
     @Override
-    protected abstract Object findSearchKey(String uuid);
+    protected abstract SK findSearchKey(String uuid);
 
     @Override
-    protected abstract void doDelete(Object searchKey);
+    protected abstract void doDelete(SK searchKey);
 
     @Override
-    protected abstract Resume doGet(Object searchKey);
+    protected abstract Resume doGet(SK searchKey);
 
     @Override
-    protected abstract void doUpdate(Object searchKey, Resume resume);
+    protected abstract void doUpdate(SK searchKey, Resume resume);
 
     @Override
-    protected void doSave(Object searchIndex, Resume resume) {
+    protected void doSave(SK searchIndex, Resume resume) {
         String uuid = resume.getUuid();
         storage.put(uuid, resume);
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
+    protected boolean isNotExisting(SK searchKey) {
         return searchKey == null;
     }
 
@@ -42,7 +42,7 @@ public abstract class AbstractMapStorage extends AbstractStorage {
     }
 
     @Override
-    protected List<Resume> getList() {
+    protected List<Resume> doCopyAll() {
         return new ArrayList<>(storage.values());
     }
 }
