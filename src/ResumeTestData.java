@@ -4,7 +4,11 @@ import java.time.YearMonth;
 
 public class ResumeTestData {
     public static void main(String[] args) {
-        Resume resume = new Resume("uuid50", "Marcus Gilmore");
+        System.out.println(makeTestResume("uuid50", "Marcus Simpson"));
+    }
+
+    public static Resume makeTestResume(String uuid, String fullName) {
+        Resume resume = new Resume(uuid, fullName);
 
         resume.saveContact(ContactType.PHONE_NUMBER, "Тел.: +7(921) 855-0482");
         resume.saveContact(ContactType.MESSENGER_ACCOUNT, "Skype: grigory.kislin");
@@ -32,18 +36,21 @@ public class ResumeTestData {
                     saveToData("Создание JavaEE фреймворка для отказоустойчивого взаимодействия слабо-связанных сервисов (SOA-base архитектура, JAX-WS, JMS, AS Glassfish). Сбор статистики сервисов и информации о состоянии через систему мониторинга Nagios. Реализация онлайн клиента для администрирования и мониторинга системы по JMX (Jython/ Django).");
                     saveToData("Реализация протоколов по приему платежей всех основных платежных системы России (Cyberplat, Eport, Chronopay, Сбербанк), Белоруcсии(Erip, Osmp) и Никарагуа.");
                 }});
-        resume.saveSection(SectionType.EXPERIENCE, new Organisation() {{
-            saveToData(new Experience("Java Online Projects", "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.", YearMonth.of(2013, 10), YearMonth.now()));
-            saveToData(new Experience("Wrike", "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.",
+        resume.saveSection(SectionType.EXPERIENCE, new OrganisationSection() {{
+            saveToData(new Experience(new Link("Java Online Projects", "http://javaops.ru/"), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.", YearMonth.of(2013, 10), YearMonth.now()));
+            saveToData(new Experience(new Link("Wrike", "https://www.wrike.com/"), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.",
                     YearMonth.of(2014, 10), YearMonth.of(2016, 1)));
-            saveToData(new Experience("RIT Center", "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python",
+            saveToData(new Experience(new Link("RIT Center"), "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python",
                     YearMonth.of(2012, 4), YearMonth.of(2014, 10)));
         }});
-        resume.saveSection(SectionType.EDUCATION, new Organisation() {{
-            saveToData(new Experience("Coursera", "\"Functional Programming Principles in Scala\" by Martin Odersky", YearMonth.of(2013, 3), YearMonth.of(2013, 5)));
-            saveToData(new Experience("Luxoft", "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", YearMonth.of(2011, 3), YearMonth.of(2011, 4)));
+        resume.saveSection(SectionType.EDUCATION, new OrganisationSection() {{
+            saveToData(new Experience(new Link("Coursera", "https://www.coursera.org/course/progfun"), "\"Functional Programming Principles in Scala\" by Martin Odersky", YearMonth.of(2013, 3), YearMonth.of(2013, 5)));
+            saveToData(new Experience(new Link("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366"), "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", YearMonth.of(2011, 3), YearMonth.of(2011, 4)));
+            saveToData(new Experience(new Link("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики", "http://www.ifmo.ru/")) {{
+                savePeriod(new Period("Инженер (программист Fortran, C)", YearMonth.of(1987, 9), YearMonth.of(1993, 7)));
+                savePeriod(new Period("Аспирантура (программист С, С++)", YearMonth.of(1993, 9), YearMonth.of(1996, 7)));
+            }});
         }});
-        System.out.println(resume);
-//        resume.printAllContacts();
+        return resume;
     }
 }

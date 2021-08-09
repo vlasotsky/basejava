@@ -31,10 +31,10 @@ public class ListSection extends AbstractSection<String> {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         for (String element : data) {
-            stringBuilder.append('*').append(element).append('\n');
+            sb.append('*').append(element).append('\n');
         }
-        return stringBuilder.toString();
+        return sb.toString();
     }
 }

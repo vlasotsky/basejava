@@ -10,7 +10,7 @@ public class Resume {
     private final String fullName;
 
     private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
-    private final EnumMap<SectionType, AbstractSection<?>> sections = new EnumMap<>(SectionType.class);
+    private final Map<SectionType, AbstractSection<?>> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -28,7 +28,7 @@ public class Resume {
         return contacts;
     }
 
-    public EnumMap<SectionType, AbstractSection<?>> getAllSections() {
+    public Map<SectionType, AbstractSection<?>> getAllSections() {
         return sections;
     }
 
@@ -38,12 +38,6 @@ public class Resume {
 
     public String getFullName() {
         return fullName;
-    }
-
-    public void printAllContacts() {
-        for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
     }
 
     private void initializeSections() {
@@ -75,20 +69,20 @@ public class Resume {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("~Contacts:\n");
+        StringBuilder sb = new StringBuilder();
+        sb.append("~Contacts:\n");
         for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-            stringBuilder.append(entry.getKey()).append(":\n");
-            stringBuilder.append(entry.getValue()).append('\n');
+            sb.append(entry.getKey()).append(":\n");
+            sb.append(entry.getValue()).append('\n');
         }
-        stringBuilder.append("_____________________________________").append("\n~Sections:\n");
+        sb.append("_____________________________________").append("\n~Sections:\n");
         for (Map.Entry<SectionType, AbstractSection<?>> entry : sections.entrySet()) {
-            stringBuilder.append(entry.getKey()).append(":\n");
-            stringBuilder.append(entry.getValue()).append('\n');
+            sb.append(entry.getKey()).append(":\n");
+            sb.append(entry.getValue()).append('\n');
         }
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        sb.deleteCharAt(sb.length() - 1);
         return uuid + '(' + fullName + ')' + '\n'
-                + stringBuilder;
+                + sb;
     }
 
 }

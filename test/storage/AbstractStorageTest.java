@@ -10,7 +10,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public abstract class AbstractStorageTest {
     protected Storage storage;
 
@@ -26,6 +25,8 @@ public abstract class AbstractStorageTest {
     @Before
     public void setUp() {
         storage.clear();
+
+//        storage.save(ResumeTestData.makeTestResume());
         storage.save(new Resume(UUID_1, "Mary"));
         storage.save(new Resume(UUID_2, "David"));
         storage.save(new Resume(UUID_3, "Zoe"));

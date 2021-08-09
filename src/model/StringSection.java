@@ -1,11 +1,13 @@
 package model;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class StringSection extends AbstractSection<String> {
     private String description;
 
     public StringSection(String description) {
+        Objects.requireNonNull(description, "Description must not be null");
         this.description = description;
     }
 
@@ -37,7 +39,7 @@ public class StringSection extends AbstractSection<String> {
     }
 
     private void replaceData(String toBeReplaced, String replacement) {
-        StringBuilder stringBuilder = new StringBuilder(description);
-        description = Pattern.compile(toBeReplaced).matcher(stringBuilder).replaceAll(replacement);
+        StringBuilder sb = new StringBuilder(description);
+        description = Pattern.compile(toBeReplaced).matcher(sb).replaceAll(replacement);
     }
 }

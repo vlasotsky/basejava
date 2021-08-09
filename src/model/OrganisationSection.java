@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Organisation extends AbstractSection<Experience> {
+public class OrganisationSection extends AbstractSection<Experience> {
 
     private final List<Experience> data;
 
-    public Organisation() {
+    public OrganisationSection() {
         this.data = new ArrayList<>();
     }
 
@@ -39,8 +39,8 @@ public class Organisation extends AbstractSection<Experience> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Organisation)) return false;
-        Organisation that = (Organisation) o;
+        if (!(o instanceof OrganisationSection)) return false;
+        OrganisationSection that = (OrganisationSection) o;
         return data.equals(that.data);
     }
 
