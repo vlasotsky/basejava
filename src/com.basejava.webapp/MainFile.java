@@ -21,7 +21,7 @@ public class MainFile {
 //                System.out.println(name);
             }
         }
-        String rootPath = "C:\\Users\\vlaso\\basejava\\basejava\\com.basejava.webapp";
+        String rootPath = ".\\com.basejava.webapp";
         File newFile = new File(".\\com.basejava.webapp");
 
         recursiveFileReader(".\\com.basejava.webapp");
@@ -32,10 +32,11 @@ public class MainFile {
         File file = new File(path);
         if (file.isDirectory()) {
             File[] files = file.listFiles();
-            assert files != null;
-            for (File element : files) {
-                System.out.println(element.getCanonicalPath());
-                recursiveFileReader(element.getCanonicalPath());
+            if(files != null) {
+                for (File element : files) {
+                    System.out.println(element.getCanonicalPath());
+                    recursiveFileReader(element.getCanonicalPath());
+                }
             }
         }
     }

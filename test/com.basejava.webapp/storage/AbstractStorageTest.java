@@ -1,11 +1,13 @@
 package com.basejava.webapp.storage;
 
+import com.basejava.webapp.ResumeTestData;
 import com.basejava.webapp.exception.ExistingStorageException;
 import com.basejava.webapp.exception.NotExistingStorageException;
 import com.basejava.webapp.model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +27,9 @@ public abstract class AbstractStorageTest {
     public void setUp() {
         storage.clear();
 
-//        storage.save(ResumeTestData.makeTestResume());
-        storage.save(new Resume(UUID_1, "Mary"));
-        storage.save(new Resume(UUID_2, "David"));
-        storage.save(new Resume(UUID_3, "Zoe"));
+        storage.save(ResumeTestData.makeTestResume(UUID_1, "Mary"));
+        storage.save(ResumeTestData.makeTestResume(UUID_2, "David"));
+        storage.save(ResumeTestData.makeTestResume(UUID_3, "Zoe"));
     }
 
     @Test
@@ -44,7 +45,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume resumeToTest = new Resume(UUID_1, "Mary");
+        Resume resumeToTest = ResumeTestData.makeTestResume(UUID_1, "Mary");
         storage.update(resumeToTest);
         Assert.assertEquals(resumeToTest, storage.get(UUID_1));
         Assert.assertEquals(3, storage.size());
@@ -52,20 +53,20 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = NotExistingStorageException.class)
     public void updateNotExisting() {
-        storage.update(new Resume("uuid8", "dummy"));
+        storage.update(ResumeTestData.makeTestResume("uuid8", "dummy"));
     }
 
     @Test
     public void save() {
-        Resume resume = new Resume("uuid25", "Gabriel");
-        storage.save(new Resume("uuid25", "Gabriel"));
+        Resume resume = ResumeTestData.makeTestResume("uuid25", "Gabriel");
+        storage.save(ResumeTestData.makeTestResume("uuid25", "Gabriel"));
         Assert.assertEquals(resume, storage.get("uuid25"));
         Assert.assertEquals(4, storage.size());
     }
 
     @Test(expected = ExistingStorageException.class)
     public void saveAlreadyExisting() {
-        storage.save(new Resume(UUID_1, "Mary"));
+        storage.save(ResumeTestData.makeTestResume(UUID_1, "Mary"));
     }
 
     @Test(expected = NotExistingStorageException.class)
@@ -83,7 +84,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void get() {
-        Resume resume = new Resume(UUID_1, "Mary");
+        Resume resume = ResumeTestData.makeTestResume(UUID_1, "Mary");
         Assert.assertEquals(resume, storage.get(UUID_1));
     }
 
@@ -95,9 +96,9 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAllSorted() {
         List<Resume> listToTest = new ArrayList<>() {{
-            add(new Resume(UUID_1, "Mary"));
-            add(new Resume(UUID_2, "David"));
-            add(new Resume(UUID_3, "Zoe"));
+            add(ResumeTestData.makeTestResume(UUID_1, "Mary"));
+            add(ResumeTestData.makeTestResume(UUID_2, "David"));
+            add(ResumeTestData.makeTestResume(UUID_3, "Zoe"));
         }};
         listToTest.sort(AbstractStorage.STORAGE_COMPARATOR);
         Assert.assertEquals(listToTest, storage.getAllSorted());
