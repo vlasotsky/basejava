@@ -12,24 +12,13 @@ public class StringSection extends AbstractSection<String> {
     }
 
     @Override
-    protected void printData() {
-        System.out.println(description);
-    }
-
-    @Override
     protected void saveToData(String dataNew) {
         description += ' ' + dataNew;
     }
 
     @Override
-    protected void update(String dataPrev, String dataNew) {
-        replaceData(dataPrev, dataNew);
-        System.out.println("Required data was deleted");
-    }
-
-    @Override
     protected void delete(String dataToDelete) {
-        replaceData(dataToDelete, "");
+        replaceData(dataToDelete);
         System.out.println("Section was updated");
     }
 
@@ -38,8 +27,8 @@ public class StringSection extends AbstractSection<String> {
         return '*' + description + '\n';
     }
 
-    private void replaceData(String toBeReplaced, String replacement) {
+    private void replaceData(String toBeReplaced) {
         StringBuilder sb = new StringBuilder(description);
-        description = Pattern.compile(toBeReplaced).matcher(sb).replaceAll(replacement);
+        description = Pattern.compile(toBeReplaced).matcher(sb).replaceAll("");
     }
 }

@@ -13,22 +13,8 @@ public class OrganisationSection extends AbstractSection<Experience> {
     }
 
     @Override
-    protected void printData() {
-        System.out.println();
-        for (Experience element : data) {
-            System.out.println(element);
-            System.out.println("________________________________________________________");
-        }
-    }
-
-    @Override
     protected void saveToData(Experience dataNew) {
         data.add(dataNew);
-    }
-
-    @Override
-    protected void update(Experience dataPrev, Experience dataNew) {
-        data.set(data.indexOf(dataPrev), dataNew);
     }
 
     @Override

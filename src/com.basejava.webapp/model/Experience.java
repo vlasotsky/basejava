@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class Experience {
-    //    private String title;
     private Link nameAndLink;
     private String subtitle;
     private String description;
@@ -51,7 +50,6 @@ public class Experience {
                 sb.append(element).append('\n');
             }
         } else if (this.subtitle != null) {
-//            sb.append("*Organisation: ").append(title).append('\n');
             sb.append("Activity: ").append(subtitle).append('\n');
             sb.append("Description: ").append(description).append('\n');
             sb.append("DateFrom: ").append(dateFrom).append('\n');
