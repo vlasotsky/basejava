@@ -56,10 +56,13 @@ public class Resume {
 
     @Override
     public boolean equals(Object o) {
+//        if (o == null) {
+//            return false;
+//        }
         if (this == o) return true;
         if (!(o instanceof Resume)) return false;
         Resume resume = (Resume) o;
-        return uuid.equals(resume.uuid) && fullName.equals(resume.fullName) && contacts.equals(resume.contacts) && sections.equals(resume.sections);
+        return Objects.equals(uuid, resume.uuid) && Objects.equals(fullName, resume.fullName) && Objects.equals(contacts, resume.contacts) && Objects.equals(sections, resume.sections);
     }
 
     @Override

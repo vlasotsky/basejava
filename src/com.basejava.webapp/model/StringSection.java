@@ -31,4 +31,17 @@ public class StringSection extends AbstractSection<String> {
         StringBuilder sb = new StringBuilder(description);
         description = Pattern.compile(toBeReplaced).matcher(sb).replaceAll("");
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StringSection)) return false;
+        StringSection that = (StringSection) o;
+        return Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(description);
+    }
 }

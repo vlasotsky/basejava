@@ -57,4 +57,17 @@ public class Experience {
         }
         return sb.toString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Experience)) return false;
+        Experience that = (Experience) o;
+        return Objects.equals(nameAndLink, that.nameAndLink) && Objects.equals(subtitle, that.subtitle) && Objects.equals(description, that.description) && Objects.equals(dateFrom, that.dateFrom) && Objects.equals(dateTo, that.dateTo) && Objects.equals(periodList, that.periodList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nameAndLink, subtitle, description, dateFrom, dateTo, periodList);
+    }
 }

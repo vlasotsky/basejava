@@ -26,7 +26,6 @@ public abstract class AbstractStorageTest {
     @Before
     public void setUp() {
         storage.clear();
-
         storage.save(ResumeTestData.makeTestResume(UUID_1, "Mary"));
         storage.save(ResumeTestData.makeTestResume(UUID_2, "David"));
         storage.save(ResumeTestData.makeTestResume(UUID_3, "Zoe"));
@@ -101,6 +100,8 @@ public abstract class AbstractStorageTest {
             add(ResumeTestData.makeTestResume(UUID_3, "Zoe"));
         }};
         listToTest.sort(AbstractStorage.STORAGE_COMPARATOR);
-        Assert.assertEquals(listToTest, storage.getAllSorted());
+        List<Resume> expected = storage.getAllSorted();
+        Assert.assertEquals(listToTest, expected);
+//        Assert.assertTrue(listToTest == storage.getAllSorted());
     }
 }

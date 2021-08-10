@@ -26,4 +26,17 @@ public class Link {
         }
         return sb.toString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Link)) return false;
+        Link link1 = (Link) o;
+        return Objects.equals(name, link1.name) && Objects.equals(link, link1.link);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, link);
+    }
 }

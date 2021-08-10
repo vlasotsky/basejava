@@ -44,5 +44,4 @@ public class OrganisationSection extends AbstractSection<Experience> {
         dataText.deleteCharAt(dataText.length() - 1);
         return dataText.toString();
     }
-
 }
