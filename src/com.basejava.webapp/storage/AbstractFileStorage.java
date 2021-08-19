@@ -2,6 +2,7 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,10 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         this.directory = directory;
     }
 
+    protected abstract void doWrite(OutputStream outputStream, Resume resume) throws IOException;
+
+    protected abstract Resume doRead(BufferedInputStream inputStream) throws IOException;
+
     @Override
     protected File findSearchKey(String uuid) {
         return new File(directory, uuid);
@@ -30,42 +35,38 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void doSave(File file, Resume resume) {
         try {
             file.createNewFile();
-            doWrite(file, resume);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("Couldn't create file " + file.getAbsolutePath(), file.getName(), e);
         }
+        doUpdate(file, resume);
     }
 
-    protected abstract void doWrite(File file, Resume resume) throws IOException;
 
     @Override
     protected void doDelete(File file) {
-        File[] files = Objects.requireNonNull(directory.listFiles());
-        for (File element: files) {
-            if (element == file) {
-                element.delete();
-            }
+        if (!file.delete()) {
+            throw new StorageException("File deletion error", file.getName());
         }
     }
 
     @Override
     protected Resume doGet(File file) {
-        //next lesson's material
-        doRead();
-        return null;
+        try {
+            return doRead(new BufferedInputStream(new FileInputStream(file)));
+        } catch (IOException e) {
+            throw new StorageException("Error while reading a file", file.getName(), e);
+        }
     }
-
-    protected abstract void doRead();
 
     @Override
     protected void doUpdate(File file, Resume resume) {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(file);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
-            objectOutputStream.writeObject(resume);
+        try {
+            doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("Error while writing into a file", resume.getUuid(), e);
         }
     }
+
 
     @Override
     protected boolean isNotExisting(File file) {
@@ -74,13 +75,13 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected List<Resume> doCopyAll() {
-        List<Resume> list = new ArrayList<>();
-        try (ObjectInputStream fis = new ObjectInputStream(new FileInputStream(directory))) {
-            while (fis.available() != 0) {
-                list.add((Resume) fis.readObject());
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new StorageException("IO error| ClassNotFound error", e.getMessage(), e);
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Error while reading a file", null);
+        }
+        List<Resume> list = new ArrayList<>(files.length);
+        for (File file : files) {
+            list.add(doGet(file));
         }
         return list;
     }
@@ -88,15 +89,20 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     public void clear() {
         File[] files = directory.listFiles();
-        assert files != null;
-        for (File element : files) {
-            element.delete();
+        if (files != null) {
+            for (File element : files) {
+                doDelete(element);
+            }
+            System.out.println("Files were deleted");
         }
-        System.out.println("Files were deleted");
     }
 
     @Override
     public int size() {
-        return Objects.requireNonNull(directory.list()).length;
+        String[] list = directory.list();
+        if (list == null) {
+            throw new StorageException("Error in attempt to read the directory", null);
+        }
+        return list.length;
     }
 }

@@ -20,7 +20,6 @@ public class TestSingleton {
     }
 
     public static void main(String[] args) {
-//        getInstance().toString();
         Singleton instance = Singleton.valueOf("INSTANCE");
         System.out.println(instance.ordinal());
 

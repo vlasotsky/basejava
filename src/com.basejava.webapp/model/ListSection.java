@@ -1,11 +1,27 @@
 package com.basejava.webapp.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class ListSection extends AbstractSection<String> {
-    private final List<String> data = new ArrayList<>();
+    private static final long serialVersionUID = 1L;
+
+    private final List<String> data;
+
+    public ListSection(List<String> data) {
+        Objects.requireNonNull(data, "Data must not be null");
+        this.data = data;
+    }
+
+    public ListSection(String... data) {
+        this(Arrays.asList(data));
+    }
+
+    public ListSection() {
+        this.data = new ArrayList<>();
+    }
 
     @Override
     protected void saveToData(String dataNew) {

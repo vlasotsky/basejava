@@ -3,6 +3,7 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.exception.ExistingStorageException;
 import com.basejava.webapp.exception.NotExistingStorageException;
 import com.basejava.webapp.model.Resume;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -36,7 +37,7 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     @Override
     public final void update(Resume resume) {
-        LOG.info("Update " + resume);
+        LOG.info("Update " + resume.getFullName());
         String uuid = resume.getUuid();
         doUpdate(getSearchKeyIfResumeExists(uuid), resume);
         System.out.println("ID " + uuid + " was updated.");
@@ -44,7 +45,7 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     @Override
     public void save(Resume resume) {
-        LOG.info("Save " + resume);
+        LOG.info("Save " + resume.getFullName());
         String uuid = resume.getUuid();
         SK searchKey = findSearchKey(uuid);
         if (!isNotExisting(searchKey)) {

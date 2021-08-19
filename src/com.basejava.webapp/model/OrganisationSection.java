@@ -1,24 +1,39 @@
 package com.basejava.webapp.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class OrganisationSection extends AbstractSection<Experience> {
+public class OrganisationSection extends AbstractSection<Organisation> {
+    private static final long serialVersionUID = 1L;
 
-    private final List<Experience> data;
+    private final List<Organisation> data;
+
+    public OrganisationSection(Organisation... organisations) {
+        this(Arrays.asList(organisations));
+    }
+
+    public OrganisationSection(List<Organisation> organisations) {
+        Objects.requireNonNull(organisations, "Data must not be null");
+        this.data = organisations;
+    }
 
     public OrganisationSection() {
         this.data = new ArrayList<>();
     }
 
+    public List<Organisation> getData() {
+        return data;
+    }
+
     @Override
-    protected void saveToData(Experience dataNew) {
+    protected void saveToData(Organisation dataNew) {
         data.add(dataNew);
     }
 
     @Override
-    protected void delete(Experience dataToDelete) {
+    protected void delete(Organisation dataToDelete) {
         data.remove(dataToDelete);
     }
 
@@ -38,7 +53,7 @@ public class OrganisationSection extends AbstractSection<Experience> {
     @Override
     public String toString() {
         StringBuilder dataText = new StringBuilder();
-        for (Experience element : data) {
+        for (Organisation element : data) {
             dataText.append(element).append('\n');
         }
         dataText.deleteCharAt(dataText.length() - 1);

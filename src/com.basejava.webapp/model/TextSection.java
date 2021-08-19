@@ -3,10 +3,12 @@ package com.basejava.webapp.model;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public class StringSection extends AbstractSection<String> {
+public class TextSection extends AbstractSection<String> {
+    private static final long serialVersionUID = 1L;
+
     private String description;
 
-    public StringSection(String description) {
+    public TextSection(String description) {
         Objects.requireNonNull(description, "Description must not be null");
         this.description = description;
     }
@@ -35,8 +37,8 @@ public class StringSection extends AbstractSection<String> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof StringSection)) return false;
-        StringSection that = (StringSection) o;
+        if (!(o instanceof TextSection)) return false;
+        TextSection that = (TextSection) o;
         return Objects.equals(description, that.description);
     }
 

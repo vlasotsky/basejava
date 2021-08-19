@@ -1,11 +1,14 @@
 package com.basejava.webapp.model;
 
+import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Resume {
+public class Resume implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final String uuid;
     private final String fullName;
 
@@ -56,9 +59,6 @@ public class Resume {
 
     @Override
     public boolean equals(Object o) {
-//        if (o == null) {
-//            return false;
-//        }
         if (this == o) return true;
         if (!(o instanceof Resume)) return false;
         Resume resume = (Resume) o;
