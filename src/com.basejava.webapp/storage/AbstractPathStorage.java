@@ -3,22 +3,20 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public abstract class AbstractPathStorage extends AbstractStorage<Path> {
-    private Path directory;
+    private final Path directory;
 
     protected AbstractPathStorage(String dir) {
-        Objects.requireNonNull(dir, "directory must not be null");
         directory = Paths.get(dir);
+        Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + "is not a directory or it is not writable");
         }
@@ -26,68 +24,84 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
 
     protected abstract void doWrite(OutputStream outputStream, Resume resume) throws IOException;
 
-    protected abstract Resume doRead(BufferedInputStream inputStream) throws IOException;
+    protected abstract Resume doRead(InputStream inputStream) throws IOException;
 
     @Override
     protected Path findSearchKey(String uuid) {
-        return Paths.get(directory.toUri());
+//        return Paths.get(directory.forEach(x-> {
+//            if (x.getFileName().toString().equals(uuid)) {
+//                try {
+//                    return x.toRealPath();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }));
+        for (Path element : directory) {
+            if (element.getFileName().toString().equals(uuid)) {
+                return element;
+            }
+        }
+        return null;
     }
 
     @Override
     protected void doSave(Path path, Resume resume) {
-//        try {
-//            path.createNewPath();
+//            Files.copy(path, directory);
+        File file = new File(path + "\\" + resume.getUuid());
 //        } catch (IOException e) {
-//            throw new StorageException("Couldn't create Path " + directory.toAbsolutePath(), directory.getFileName().toString(), e);
+//            throw new StorageException("Couldn't create Path " + path.toAbsolutePath(), path.getFileName().toString(), e);
 //        }
 //        doUpdate(path, resume);
+        doUpdate(file.toPath(), resume);
     }
 
 
     @Override
     protected void doDelete(Path path) {
-//        if (!path.delete()) {
-//            throw new StorageException("Path deletion error", path.getFileName().toString());
-//        }
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            throw new StorageException("Path deletion error", path.getFileName().toString());
+        }
     }
 
     @Override
     protected Resume doGet(Path path) {
-//        try {
-//            return doRead(new BufferedInputStream(new PathInputStream(path)));
-//        } catch (IOException e) {
-//            throw new StorageException("Error while reading a Path", path.getFileName().toString(), e);
-//        }
-        return null;
+        try {
+            return doRead(new BufferedInputStream(new FileInputStream(path.toFile())));
+        } catch (IOException e) {
+            throw new StorageException("Error while reading the path", path.getFileName().toString(), e);
+        }
     }
 
     @Override
-    protected void doUpdate(Path Path, Resume resume) {
-//        try {
-//            doWrite(new BufferedOutputStream(new PathOutputStream(Path)));
-//        } catch (IOException e) {
-//            throw new StorageException("Error while writing into a Path", resume.getUuid(), e);
-//        }
+    protected void doUpdate(Path path, Resume resume) {
+        try {
+//            doWrite(new BufferedOutputStream(new FileOutputStream(path.toFile())), resume);
+            doWrite(new BufferedOutputStream(new FileOutputStream(path + "\\" + resume.getUuid())), resume);
+        } catch (IOException e) {
+            throw new StorageException("Error while writing the path", resume.getUuid(), e);
+        }
     }
 
 
     @Override
     protected boolean isNotExisting(Path path) {
-        return new File(String.valueOf(path)).exists();
+        return path == null;
+//        return Files.notExists(path);
     }
 
     @Override
     protected List<Resume> doCopyAll() {
-//        Path[] paths = directory.listPaths();
-//        if (paths == null) {
-//            throw new StorageException("Error while reading a Path", null);
-//        }
-//        List<Resume> list = new ArrayList<>(paths.length);
-//        for (Path Path : paths) {
-//            list.add(doGet(Path));
-//        }
-//        return list;
-        return null;
+        if (directory == null) {
+            throw new StorageException("Error while reading the directory path", null);
+        }
+        List<Resume> list = new ArrayList<>();
+        for (Path element : directory) {
+            list.add(doGet(element));
+        }
+        return list;
     }
 
     @Override
@@ -95,17 +109,25 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         try {
             Files.list(directory).forEach(this::doDelete);
         } catch (IOException e) {
-            throw new StorageException("Path delete error", null);
+            throw new StorageException("Error while deleting the path", null);
         }
     }
 
     @Override
     public int size() {
-//        String[] list = directory.list();
-//        if (list == null) {
-//            throw new StorageException("Error in attempt to read the directory", null);
-//        }
-//        return list.length;
-        return 0;
+        int size = directory.getNameCount();
+        if (size == 0) {
+            throw new StorageException("Error in attempt to read the directory or it is empty", null);
+        }
+        return size;
     }
+// OR:
+//        try {
+//            return (int)Files.getAttribute(directory, "size");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        throw new StorageException("Error with calculating the size of a directory", null);
+//    }
 }
+
