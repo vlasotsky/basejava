@@ -4,6 +4,7 @@ import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
 import java.io.*;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,7 +19,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         directory = Paths.get(dir);
         Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
-            throw new IllegalArgumentException(dir + "is not a directory or it is not writable");
+            throw new IllegalArgumentException(dir + " is not a directory or it is not writable");
         }
     }
 
@@ -28,37 +29,25 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
 
     @Override
     protected Path findSearchKey(String uuid) {
-//        return Paths.get(directory.forEach(x-> {
-//            if (x.getFileName().toString().equals(uuid)) {
-//                try {
-//                    return x.toRealPath();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }));
-        for (Path element : directory) {
-            if (element.getFileName().toString().equals(uuid)) {
-                return element;
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
+            for (Path element : directoryStream) {
+                if (element.getFileName().toString().equals(uuid)) {
+                    return element;
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
     @Override
     protected void doSave(Path path, Resume resume) {
-//            Files.copy(path, directory);
         if (path == null) {
             doUpdate(directory, resume);
         } else {
             doUpdate(path, resume);
         }
-//        File file = new File(path + "\\" + resume.getUuid());
-//        } catch (IOException e) {
-//            throw new StorageException("Couldn't create Path " + path.toAbsolutePath(), path.getFileName().toString(), e);
-//        }
-//        doUpdate(path, resume);
-
     }
 
 
@@ -74,6 +63,8 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume doGet(Path path) {
         try {
+
+//            return doRead(new BufferedInputStream(new FileInputStream(path.toFile())));
             return doRead(new BufferedInputStream(new FileInputStream(path.toFile())));
         } catch (IOException e) {
             throw new StorageException("Error while reading the path", path.getFileName().toString(), e);
@@ -83,7 +74,6 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected void doUpdate(Path path, Resume resume) {
         try {
-//            doWrite(new BufferedOutputStream(new FileOutputStream(path.toFile())), resume);
             doWrite(new BufferedOutputStream(new FileOutputStream(path + "\\" + resume.getUuid())), resume);
         } catch (IOException e) {
             throw new StorageException("Error while writing the path", resume.getUuid(), e);
@@ -94,7 +84,6 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected boolean isNotExisting(Path path) {
         return path == null;
-//        return Files.notExists(path);
     }
 
     @Override
@@ -120,19 +109,15 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
 
     @Override
     public int size() {
-        int size = directory.getNameCount();
-        if (size == 0) {
-            throw new StorageException("Error in attempt to read the directory or it is empty", null);
+        int size = 0;
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
+            for (Path element : directoryStream) {
+                size++;
+            }
+        } catch (IOException e) {
+            throw new StorageException("Error in attempt to read the directory", null);
         }
         return size;
     }
-// OR:
-//        try {
-//            return (int)Files.getAttribute(directory, "size");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        throw new StorageException("Error with calculating the size of a directory", null);
-//    }
 }
 
