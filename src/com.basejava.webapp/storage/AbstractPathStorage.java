@@ -50,7 +50,6 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         }
     }
 
-
     @Override
     protected void doDelete(Path path) {
         try {
@@ -63,8 +62,6 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume doGet(Path path) {
         try {
-
-//            return doRead(new BufferedInputStream(new FileInputStream(path.toFile())));
             return doRead(new BufferedInputStream(new FileInputStream(path.toFile())));
         } catch (IOException e) {
             throw new StorageException("Error while reading the path", path.getFileName().toString(), e);
@@ -80,7 +77,6 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         }
     }
 
-
     @Override
     protected boolean isNotExisting(Path path) {
         return path == null;
@@ -89,11 +85,15 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected List<Resume> doCopyAll() {
         if (directory == null) {
-            throw new StorageException("Error while reading the directory path", null);
+            throw new StorageException("Directory is null", null);
         }
         List<Resume> list = new ArrayList<>();
-        for (Path element : directory) {
-            list.add(doGet(element));
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
+            for (Path element : directoryStream) {
+                list.add(doGet(element));
+            }
+        } catch (IOException e) {
+            throw new StorageException("Error while reading the directory", null);
         }
         return list;
     }

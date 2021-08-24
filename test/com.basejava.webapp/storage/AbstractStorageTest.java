@@ -106,6 +106,5 @@ public abstract class AbstractStorageTest {
         listToTest.sort(AbstractStorage.STORAGE_COMPARATOR);
         List<Resume> expected = storage.getAllSorted();
         Assert.assertEquals(listToTest, expected);
-//        Assert.assertTrue(listToTest == storage.getAllSorted());
     }
 }
