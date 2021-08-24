@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
-//    protected static final File STORAGE_DIR = new File("C:\\Users\\vlaso\\basejava\\basejava\\test\\FilesDrop");
-    protected static final File STORAGE_DIR = new File(".\\FilesDrop");
+    protected static final File STORAGE_DIR = new File("C:\\Users\\vlaso\\basejava\\basejava\\test\\FilesDrop");
+//    protected static final File STORAGE_DIR = new File(".\\FilesDrop");
 
     protected Storage storage;
 

@@ -48,12 +48,17 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected void doSave(Path path, Resume resume) {
 //            Files.copy(path, directory);
-        File file = new File(path + "\\" + resume.getUuid());
+        if (path == null) {
+            doUpdate(directory, resume);
+        } else {
+            doUpdate(path, resume);
+        }
+//        File file = new File(path + "\\" + resume.getUuid());
 //        } catch (IOException e) {
 //            throw new StorageException("Couldn't create Path " + path.toAbsolutePath(), path.getFileName().toString(), e);
 //        }
 //        doUpdate(path, resume);
-        doUpdate(file.toPath(), resume);
+
     }
 
 
