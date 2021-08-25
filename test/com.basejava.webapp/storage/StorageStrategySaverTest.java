@@ -12,9 +12,10 @@ public class StorageStrategySaverTest {
     @Test
     public void saveWithFile() {
         saver.setStrategy(new ObjectStreamStorage(AbstractStorageTest.STORAGE_DIR));
-        saver.strategy.doAction(resumeToTest);
-
         AbstractFileStorage fileStorage = (AbstractFileStorage) saver.strategy.getObject();
+
+        fileStorage.clear();
+        saver.strategy.doAction(resumeToTest);
 
         Assert.assertEquals(resumeToTest, fileStorage.get(resumeToTest.getUuid()));
     }
@@ -22,11 +23,12 @@ public class StorageStrategySaverTest {
     @Test
     public void saveWithPath() {
         saver.setStrategy(new ObjectStreamPathStorage(AbstractStorageTest.STORAGE_DIR.getAbsolutePath()));
-        saver.strategy.doAction(resumeToTest);
-
         AbstractPathStorage pathStorage = (AbstractPathStorage) saver.strategy.getObject();
 
-        Assert.assertEquals(resumeToTest, pathStorage.get(resumeToTest.getUuid()));
+        pathStorage.clear();
 
+        saver.strategy.doAction(resumeToTest);
+
+        Assert.assertEquals(resumeToTest, pathStorage.get(resumeToTest.getUuid()));
     }
 }
