@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> {
+public abstract class AbstractPathStorage extends AbstractStorage<Path> implements Strategy {
     private final Path directory;
 
     protected AbstractPathStorage(String dir) {
@@ -73,7 +73,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         try {
             if (path.getFileName().toString().equals(resume.getUuid())) {
                 doWrite(new BufferedOutputStream(new FileOutputStream(path.toAbsolutePath().toString())), resume);
-            }else{
+            } else {
                 doWrite(new BufferedOutputStream(new FileOutputStream(path + "\\" + resume.getUuid())), resume);
             }
         } catch (IOException e) {
@@ -122,6 +122,21 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
             throw new StorageException("Error in attempt to read the directory", null);
         }
         return size;
+    }
+
+    @Override
+    public void doAction(Resume resume) {
+        this.save(resume);
+    }
+
+    @Override
+    public Path getStorage() {
+        return directory;
+    }
+
+    @Override
+    public Object getObject() {
+        return this;
     }
 }
 

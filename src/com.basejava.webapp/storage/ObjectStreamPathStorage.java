@@ -5,7 +5,7 @@ import com.basejava.webapp.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamPathStorage extends AbstractPathStorage {
+public class ObjectStreamPathStorage extends AbstractPathStorage implements Strategy{
     protected ObjectStreamPathStorage(String dir) {
         super(dir);
     }

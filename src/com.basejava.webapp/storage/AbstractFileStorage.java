@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public abstract class AbstractFileStorage extends AbstractStorage<File> implements Strategy{
     private File directory;
 
     protected AbstractFileStorage(File directory) {
@@ -104,5 +104,20 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             throw new StorageException("Error in attempt to read the directory", null);
         }
         return list.length;
+    }
+
+    @Override
+    public void doAction(Resume resume) {
+        this.save(resume);
+    }
+
+    @Override
+    public Object getStorage() {
+        return this.directory;
+    }
+
+    @Override
+    public Object getObject() {
+        return this;
     }
 }
