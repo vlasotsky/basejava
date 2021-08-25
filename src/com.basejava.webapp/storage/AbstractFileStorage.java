@@ -117,7 +117,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> implemen
     }
 
     @Override
-    public Object getObject() {
+    public Object getStorageObject() {
         return this;
     }
 }

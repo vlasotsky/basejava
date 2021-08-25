@@ -135,7 +135,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> implemen
     }
 
     @Override
-    public Object getObject() {
+    public Object getStorageObject() {
         return this;
     }
 }
