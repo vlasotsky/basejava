@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> implements Strategy{
+public class AbstractFileStorage extends AbstractStorage<File> implements ObjectStreamStrategy {
     private File directory;
 
     protected AbstractFileStorage(File directory) {
@@ -22,9 +22,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> implemen
         this.directory = directory;
     }
 
-    protected abstract void doWrite(OutputStream outputStream, Resume resume) throws IOException;
+//    protected abstract void doWrite(OutputStream outputStream, Resume resume) throws IOException;
 
-    protected abstract Resume doRead(BufferedInputStream inputStream) throws IOException;
+//    protected abstract Resume doRead(BufferedInputStream inputStream) throws IOException;
 
     @Override
     protected File findSearchKey(String uuid) {
@@ -107,17 +107,12 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> implemen
     }
 
     @Override
-    public void doAction(Resume resume) {
-        this.save(resume);
+    public void doWrite(OutputStream outputStream, Resume resume) throws IOException {
+
     }
 
     @Override
-    public Object getStorage() {
-        return this.directory;
-    }
-
-    @Override
-    public Object getStorageObject() {
-        return this;
+    public Resume doRead(InputStream inputStream) throws IOException {
+        return null;
     }
 }

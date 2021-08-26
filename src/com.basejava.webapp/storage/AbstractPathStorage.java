@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> implements Strategy {
+public class AbstractPathStorage extends AbstractStorage<Path> implements ObjectStreamStrategy {
     private final Path directory;
 
     protected AbstractPathStorage(String dir) {
@@ -23,9 +23,9 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> implemen
         }
     }
 
-    protected abstract void doWrite(OutputStream outputStream, Resume resume) throws IOException;
+//    protected abstract void doWrite(OutputStream outputStream, Resume resume) throws IOException;
 
-    protected abstract Resume doRead(InputStream inputStream) throws IOException;
+//    protected abstract Resume doRead(InputStream inputStream) throws IOException;
 
     @Override
     protected Path findSearchKey(String uuid) {
@@ -125,18 +125,13 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> implemen
     }
 
     @Override
-    public void doAction(Resume resume) {
-        this.save(resume);
+    public void doWrite(OutputStream outputStream, Resume resume) throws IOException {
+
     }
 
     @Override
-    public Path getStorage() {
-        return directory;
-    }
-
-    @Override
-    public Object getStorageObject() {
-        return this;
+    public Resume doRead(InputStream inputStream) throws IOException {
+        return null;
     }
 }
 
