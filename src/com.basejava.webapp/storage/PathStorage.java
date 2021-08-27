@@ -12,20 +12,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AbstractPathStorage extends AbstractStorage<Path> implements ObjectStreamStrategy {
+public class PathStorage extends AbstractStorage<Path> implements Strategy {
     private final Path directory;
+    private Strategy strategy;
 
-    protected AbstractPathStorage(String dir) {
+    protected PathStorage(String dir, Strategy strategy) {
         directory = Paths.get(dir);
         Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + " is not a directory or it is not writable");
         }
+        Objects.requireNonNull(strategy, "Strategy cannot be null");
+        this.strategy = strategy;
     }
 
-//    protected abstract void doWrite(OutputStream outputStream, Resume resume) throws IOException;
-
-//    protected abstract Resume doRead(InputStream inputStream) throws IOException;
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
+    }
 
     @Override
     protected Path findSearchKey(String uuid) {
@@ -126,12 +129,12 @@ public class AbstractPathStorage extends AbstractStorage<Path> implements Object
 
     @Override
     public void doWrite(OutputStream outputStream, Resume resume) throws IOException {
-
+        this.strategy.doWrite(outputStream, resume);
     }
 
     @Override
     public Resume doRead(InputStream inputStream) throws IOException {
-        return null;
+        return this.strategy.doRead(inputStream);
     }
 }
 

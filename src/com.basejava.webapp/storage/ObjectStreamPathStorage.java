@@ -5,10 +5,7 @@ import com.basejava.webapp.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamPathStorage extends AbstractPathStorage implements ObjectStreamStrategy {
-    protected ObjectStreamPathStorage(String dir) {
-        super(dir);
-    }
+public class ObjectStreamPathStorage implements Strategy {
 
     @Override
     public void doWrite(OutputStream outputStream, Resume resume) throws IOException {

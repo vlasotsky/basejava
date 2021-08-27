@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AbstractFileStorage extends AbstractStorage<File> implements ObjectStreamStrategy {
-    private File directory;
+public class FileStorage extends AbstractStorage<File> implements Strategy {
+    private final File directory;
+    private Strategy strategy;
 
-    protected AbstractFileStorage(File directory) {
-        Objects.requireNonNull(directory, "directory must not be null");
+    protected FileStorage(File directory, Strategy strategy) {
+        Objects.requireNonNull(directory, "Directory must not be null");
+        Objects.requireNonNull(strategy, "Strategy cannot be null");
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + "is not a directory");
         }
@@ -20,11 +22,12 @@ public class AbstractFileStorage extends AbstractStorage<File> implements Object
             throw new IllegalArgumentException(directory.getAbsolutePath() + "is not readable/writable");
         }
         this.directory = directory;
+        this.strategy = strategy;
     }
 
-//    protected abstract void doWrite(OutputStream outputStream, Resume resume) throws IOException;
-
-//    protected abstract Resume doRead(BufferedInputStream inputStream) throws IOException;
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
+    }
 
     @Override
     protected File findSearchKey(String uuid) {
@@ -108,11 +111,11 @@ public class AbstractFileStorage extends AbstractStorage<File> implements Object
 
     @Override
     public void doWrite(OutputStream outputStream, Resume resume) throws IOException {
-
+        this.strategy.doWrite(outputStream, resume);
     }
 
     @Override
     public Resume doRead(InputStream inputStream) throws IOException {
-        return null;
+        return this.strategy.doRead(inputStream);
     }
 }

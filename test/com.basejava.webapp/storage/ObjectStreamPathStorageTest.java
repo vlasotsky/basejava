@@ -1,8 +1,8 @@
 package com.basejava.webapp.storage;
 
-public class ObjectStreamPathStorageTest extends ObjectStreamStrategyTest {
+public class ObjectStreamPathStorageTest extends AbstractStorageTest {
 
     public ObjectStreamPathStorageTest() {
-        super(new ObjectStreamPathStorage(STORAGE_DIR.getPath()));
+        super(new PathStorage(STORAGE_DIR.getAbsolutePath(), new ObjectStreamPathStorage()));
     }
 }
