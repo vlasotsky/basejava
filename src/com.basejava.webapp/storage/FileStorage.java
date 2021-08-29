@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class FileStorage extends AbstractStorage<File> implements Strategy {
+public class FileStorage extends AbstractStorage<File> {
     private final File directory;
-    private Strategy strategy;
+    private final Strategy strategy;
 
     protected FileStorage(File directory, Strategy strategy) {
         Objects.requireNonNull(directory, "Directory must not be null");
@@ -22,10 +22,6 @@ public class FileStorage extends AbstractStorage<File> implements Strategy {
             throw new IllegalArgumentException(directory.getAbsolutePath() + "is not readable/writable");
         }
         this.directory = directory;
-        this.strategy = strategy;
-    }
-
-    public void setStrategy(Strategy strategy) {
         this.strategy = strategy;
     }
 
@@ -55,7 +51,7 @@ public class FileStorage extends AbstractStorage<File> implements Strategy {
     @Override
     protected Resume doGet(File file) {
         try {
-            return doRead(new BufferedInputStream(new FileInputStream(file)));
+            return strategy.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Error while reading a file", file.getName(), e);
         }
@@ -64,7 +60,7 @@ public class FileStorage extends AbstractStorage<File> implements Strategy {
     @Override
     protected void doUpdate(File file, Resume resume) {
         try {
-            doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
+            strategy.doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
         } catch (IOException e) {
             throw new StorageException("Error while writing into a file", resume.getUuid(), e);
         }
@@ -78,12 +74,8 @@ public class FileStorage extends AbstractStorage<File> implements Strategy {
 
     @Override
     protected List<Resume> doCopyAll() {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Error while reading a file", null);
-        }
-        List<Resume> list = new ArrayList<>(files.length);
-        for (File file : files) {
+        List<Resume> list = new ArrayList<>(getFileArray().length);
+        for (File file : getFileArray()) {
             list.add(doGet(file));
         }
         return list;
@@ -91,31 +83,21 @@ public class FileStorage extends AbstractStorage<File> implements Strategy {
 
     @Override
     public void clear() {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File element : files) {
-                doDelete(element);
-            }
-            System.out.println("Files were deleted");
+        for (File element : getFileArray()) {
+            doDelete(element);
         }
     }
 
     @Override
     public int size() {
-        String[] list = directory.list();
-        if (list == null) {
-            throw new StorageException("Error in attempt to read the directory", null);
+        return getFileArray().length;
+    }
+
+    private File[] getFileArray() {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Error while reading a file", null);
         }
-        return list.length;
-    }
-
-    @Override
-    public void doWrite(OutputStream outputStream, Resume resume) throws IOException {
-        this.strategy.doWrite(outputStream, resume);
-    }
-
-    @Override
-    public Resume doRead(InputStream inputStream) throws IOException {
-        return this.strategy.doRead(inputStream);
+        return files;
     }
 }

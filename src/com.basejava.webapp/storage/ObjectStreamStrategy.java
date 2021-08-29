@@ -5,7 +5,7 @@ import com.basejava.webapp.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamPathStorage implements Strategy {
+public class ObjectStreamStrategy implements Strategy {
 
     @Override
     public void doWrite(OutputStream outputStream, Resume resume) throws IOException {
@@ -22,6 +22,4 @@ public class ObjectStreamPathStorage implements Strategy {
             throw new StorageException("Error while reading a Resume", null, e);
         }
     }
-
-
 }
