@@ -2,16 +2,17 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
+import strategy.Strategy;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
     private final Path directory;
@@ -36,10 +37,10 @@ public class PathStorage extends AbstractStorage<Path> {
     protected void doSave(Path path, Resume resume) {
         try {
             Files.createFile(path);
-            doUpdate(path, resume);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new StorageException("Error while creating the file", resume.getUuid(), e);
         }
+        doUpdate(path, resume);
     }
 
     @Override
@@ -76,36 +77,25 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected List<Resume> doCopyAll() {
-        if (directory == null) {
-            throw new StorageException("Directory is null", null);
-        }
-        try {
-            return Files.list(directory).collect(Collectors.toList()).stream().map(this::doGet).collect(Collectors.toList());
-        } catch (IOException e) {
-            throw new StorageException("Error while copying the elements", null);
-        }
+        return getStreamOfPaths().collect(Collectors.toList()).stream().map(this::doGet).collect(Collectors.toList());
     }
 
     @Override
     public void clear() {
-        try {
-            Files.list(directory).forEach(this::doDelete);
-        } catch (IOException e) {
-            throw new StorageException("Error while deleting the path", null);
-        }
+        getStreamOfPaths().forEach(this::doDelete);
     }
 
     @Override
     public int size() {
-        int size = 0;
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
-            for (Path ignored : directoryStream) {
-                size++;
-            }
+        return (int) getStreamOfPaths().count();
+    }
+
+    private Stream<Path> getStreamOfPaths() {
+        try {
+            return Files.list(directory);
         } catch (IOException e) {
-            throw new StorageException("Error in attempt to read the directory", null);
+            throw new StorageException("Error while reading the directory", null);
         }
-        return size;
     }
 }
 

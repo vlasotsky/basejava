@@ -1,7 +1,8 @@
-package com.basejava.webapp.storage;
+package strategy;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
+import strategy.Strategy;
 
 import java.io.*;
 

@@ -2,7 +2,7 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
-
+import strategy.Strategy;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +74,9 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     protected List<Resume> doCopyAll() {
-        List<Resume> list = new ArrayList<>(getFileArray().length);
-        for (File file : getFileArray()) {
+        File[] fileArray = getFileArray();
+        List<Resume> list = new ArrayList<>(fileArray.length);
+        for (File file : fileArray) {
             list.add(doGet(file));
         }
         return list;

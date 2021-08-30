@@ -1,5 +1,7 @@
 package com.basejava.webapp.storage;
 
+import strategy.ObjectStreamStrategy;
+
 public class FileStorageTest extends AbstractStorageTest {
 
     public FileStorageTest() {
