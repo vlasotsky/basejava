@@ -1,10 +1,10 @@
 package com.basejava.webapp.storage;
 
-import strategy.ObjectStreamStrategy;
+import com.basejava.webapp.storage.strategy.ObjectStreamSerializer;
 
 public class PathStorageTest extends AbstractStorageTest {
 
     public PathStorageTest() {
-        super(new PathStorage(STORAGE_DIR.getAbsolutePath(), new ObjectStreamStrategy()));
+        super(new PathStorage(STORAGE_DIR.getAbsolutePath(), new ObjectStreamSerializer()));
     }
 }

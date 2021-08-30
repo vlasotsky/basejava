@@ -2,7 +2,8 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
-import strategy.Strategy;
+import com.basejava.webapp.storage.strategy.StreamSerializer;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +11,11 @@ import java.util.Objects;
 
 public class FileStorage extends AbstractStorage<File> {
     private final File directory;
-    private final Strategy strategy;
+    private final StreamSerializer streamSerializer;
 
-    protected FileStorage(File directory, Strategy strategy) {
+    protected FileStorage(File directory, StreamSerializer streamSerializer) {
         Objects.requireNonNull(directory, "Directory must not be null");
-        Objects.requireNonNull(strategy, "Strategy cannot be null");
+        Objects.requireNonNull(streamSerializer, "Strategy cannot be null");
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + "is not a directory");
         }
@@ -22,7 +23,7 @@ public class FileStorage extends AbstractStorage<File> {
             throw new IllegalArgumentException(directory.getAbsolutePath() + "is not readable/writable");
         }
         this.directory = directory;
-        this.strategy = strategy;
+        this.streamSerializer = streamSerializer;
     }
 
     @Override
@@ -51,7 +52,7 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected Resume doGet(File file) {
         try {
-            return strategy.doRead(new BufferedInputStream(new FileInputStream(file)));
+            return streamSerializer.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Error while reading a file", file.getName(), e);
         }
@@ -60,7 +61,7 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected void doUpdate(File file, Resume resume) {
         try {
-            strategy.doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
+            streamSerializer.doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
         } catch (IOException e) {
             throw new StorageException("Error while writing into a file", resume.getUuid(), e);
         }
@@ -97,7 +98,7 @@ public class FileStorage extends AbstractStorage<File> {
     private File[] getFileArray() {
         File[] files = directory.listFiles();
         if (files == null) {
-            throw new StorageException("Error while reading a file", null);
+            throw new StorageException("Error while reading a file");
         }
         return files;
     }

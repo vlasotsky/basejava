@@ -2,7 +2,7 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
-import strategy.Strategy;
+import com.basejava.webapp.storage.strategy.StreamSerializer;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -16,16 +16,16 @@ import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
     private final Path directory;
-    private final Strategy strategy;
+    private final StreamSerializer streamSerializer;
 
-    protected PathStorage(String dir, Strategy strategy) {
+    protected PathStorage(String dir, StreamSerializer streamSerializer) {
         directory = Paths.get(dir);
         Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + " is not a directory or it is not writable");
         }
-        Objects.requireNonNull(strategy, "Strategy cannot be null");
-        this.strategy = strategy;
+        Objects.requireNonNull(streamSerializer, "Strategy cannot be null");
+        this.streamSerializer = streamSerializer;
     }
 
     @Override
@@ -48,23 +48,23 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             Files.delete(path);
         } catch (IOException e) {
-            throw new StorageException("Path deletion error", path.getFileName().toString());
+            throw new StorageException("Path deletion error", getFileName(path));
         }
     }
 
     @Override
     protected Resume doGet(Path path) {
         try {
-            return strategy.doRead(new BufferedInputStream(Files.newInputStream(path)));
+            return streamSerializer.doRead(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
-            throw new StorageException("Error while reading the path", path.getFileName().toString(), e);
+            throw new StorageException("Error while reading the path", getFileName(path), e);
         }
     }
 
     @Override
     protected void doUpdate(Path path, Resume resume) {
         try {
-            strategy.doWrite(Files.newOutputStream(path), resume);
+            streamSerializer.doWrite(Files.newOutputStream(path), resume);
         } catch (IOException e) {
             throw new StorageException("Error while writing into the path", resume.getUuid(), e);
         }
@@ -77,7 +77,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected List<Resume> doCopyAll() {
-        return getStreamOfPaths().collect(Collectors.toList()).stream().map(this::doGet).collect(Collectors.toList());
+        return getStreamOfPaths().map(this::doGet).collect(Collectors.toList());
     }
 
     @Override
@@ -94,8 +94,12 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             return Files.list(directory);
         } catch (IOException e) {
-            throw new StorageException("Error while reading the directory", null);
+            throw new StorageException("Error while reading the directory", e);
         }
+    }
+
+    private String getFileName(Path path) {
+        return path.getFileName().toString();
     }
 }
 

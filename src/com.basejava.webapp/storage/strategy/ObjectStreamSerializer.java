@@ -1,12 +1,11 @@
-package strategy;
+package com.basejava.webapp.storage.strategy;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
-import strategy.Strategy;
 
 import java.io.*;
 
-public class ObjectStreamStrategy implements Strategy {
+public class ObjectStreamSerializer implements StreamSerializer {
 
     @Override
     public void doWrite(OutputStream outputStream, Resume resume) throws IOException {
