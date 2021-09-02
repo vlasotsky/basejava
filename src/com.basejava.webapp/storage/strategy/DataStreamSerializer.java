@@ -68,7 +68,7 @@ public class DataStreamSerializer implements StreamSerializer {
                         int[] dates = findDates(period);
 
                         allSections.put(SectionType.EXPERIENCE, new OrganisationSection(
-                                new Organisation(organisation, link, new Organisation.Position(YearMonth.of(findDates(period)[0], findDates(period)[1]), YearMonth.of(findDates(period)[2], findDates(period)[3]), dataInputStream.readUTF(), dataInputStream.readUTF()))));
+                                new Organisation(organisation, link, new Organisation.Position(YearMonth.of(findDates(period)[0], findDates(period)[1]), YearMonth.of(findDates(period)[2], findDates(period)[3]), title, description))));
                     }
                     case "EDUCATION" -> allSections.put(SectionType.EDUCATION, new OrganisationSection());
                 }
