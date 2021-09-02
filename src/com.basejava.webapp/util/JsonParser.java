@@ -1,4 +1,4 @@
-package util;
+package com.basejava.webapp.util;
 
 import com.basejava.webapp.model.Section;
 import com.google.gson.Gson;

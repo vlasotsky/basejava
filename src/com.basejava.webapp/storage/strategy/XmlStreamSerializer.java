@@ -6,7 +6,7 @@ import com.basejava.webapp.model.Organisation;
 import com.basejava.webapp.model.OrganisationSection;
 import com.basejava.webapp.model.Resume;
 import com.basejava.webapp.model.TextSection;
-import util.XmlParser;
+import com.basejava.webapp.util.XmlParser;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

@@ -1,4 +1,4 @@
-package util;
+package com.basejava.webapp.util;
 
 //import javax.xml.bind.*;
 import javax.xml.bind.JAXBContext;

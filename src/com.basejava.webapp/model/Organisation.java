@@ -1,6 +1,6 @@
 package com.basejava.webapp.model;
 
-import util.YearMonthAdapter;
+import com.basejava.webapp.util.YearMonthAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

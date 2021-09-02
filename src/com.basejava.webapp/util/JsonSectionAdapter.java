@@ -1,4 +1,4 @@
-package util;
+package com.basejava.webapp.util;
 
 import com.google.gson.*;
 

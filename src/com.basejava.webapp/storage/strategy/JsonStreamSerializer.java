@@ -1,7 +1,7 @@
 package com.basejava.webapp.storage.strategy;
 
 import com.basejava.webapp.model.Resume;
-import util.JsonParser;
+import com.basejava.webapp.util.JsonParser;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
