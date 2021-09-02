@@ -44,33 +44,27 @@ public class DataStreamSerializer implements StreamSerializer {
             String fullName = dataInputStream.readUTF();
             Resume resume = new Resume(uuid, fullName);
             Map<ContactType, String> allContacts = resume.getAllContacts();
-            int size = dataInputStream.readInt();
-            for (int i = 0; i < size; i++) {
+            int sizeOfContacts = dataInputStream.readInt();
+            for (int i = 0; i < sizeOfContacts; i++) {
                 allContacts.put(ContactType.valueOf(dataInputStream.readUTF()), dataInputStream.readUTF());
             }
+            int sizeOfSections = dataInputStream.readInt();
+//            String data = dataInputStream.readUTF();
             Map<SectionType, Section<?>> allSections = resume.getAllSections();
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < sizeOfSections; i++) {
                 String readData = dataInputStream.readUTF();
                 switch (readData) {
-                    case "OBJECTIVE":
-                        allSections.put(SectionType.OBJECTIVE, new TextSection(dataInputStream.readUTF()));
-                        break;
-                    case "QUALIFICATIONS":
-                        allSections.put(SectionType.QUALIFICATIONS, new ListSection(dataInputStream.readUTF()));
-                        break;
-                    case "PERSONAL":
-                        allSections.put(SectionType.PERSONAL, new TextSection(dataInputStream.readUTF()));
-                        break;
-                    case "ACHIEVEMENTS":
-                        allSections.put(SectionType.ACHIEVEMENTS, new ListSection(dataInputStream.readUTF()));
-                        break;
-                    case "EXPERIENCE":
+                    case "OBJECTIVE" -> allSections.put(SectionType.OBJECTIVE, new TextSection(dataInputStream.readUTF()));
+                    case "QUALIFICATIONS" -> allSections.put(SectionType.QUALIFICATIONS, new ListSection(dataInputStream.readUTF()));
+                    case "PERSONAL" -> allSections.put(SectionType.PERSONAL, new TextSection(dataInputStream.readUTF()));
+                    case "ACHIEVEMENTS" -> allSections.put(SectionType.ACHIEVEMENTS, new ListSection(dataInputStream.readUTF()));
+                    case "EXPERIENCE" -> {
+                        String data = dataInputStream.readUTF();
+//                        String data1 = dataInputStream.readUTF();
                         allSections.put(SectionType.EXPERIENCE, new OrganisationSection(
                                 new Organisation(dataInputStream.readUTF(), dataInputStream.readUTF(), new Organisation.Position(YearMonth.parse(dataInputStream.readUTF()), YearMonth.parse(dataInputStream.readUTF()), dataInputStream.readUTF(), dataInputStream.readUTF()))));
-                        break;
-                    case "EDUCATION":
-                        allSections.put(SectionType.EDUCATION, new OrganisationSection());
-                        break;
+                    }
+                    case "EDUCATION" -> allSections.put(SectionType.EDUCATION, new OrganisationSection());
                 }
             }
             // TODO implement sections
