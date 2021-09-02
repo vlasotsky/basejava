@@ -26,6 +26,9 @@ public class MainFile {
         File newFile = new File(".\\com.basejava.webapp");
 
         recursiveDirReader(".\\src", "");
+        System.out.println("Current directory: ");
+        File directory = new File(".\\");
+        System.out.println(directory.getAbsolutePath());
     }
 
     private static void recursiveDirReader(String path, String tab) throws IOException {

@@ -1,14 +1,19 @@
 package com.basejava.webapp.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class OrganisationSection extends AbstractSection<Organisation> {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class OrganisationSection extends Section<Organisation> {
     private static final long serialVersionUID = 1L;
+    private List<Organisation> data = new ArrayList<>();
 
-    private final List<Organisation> data;
+    public OrganisationSection() {
+    }
 
     public OrganisationSection(Organisation... organisations) {
         this(Arrays.asList(organisations));
@@ -19,22 +24,8 @@ public class OrganisationSection extends AbstractSection<Organisation> {
         this.data = organisations;
     }
 
-    public OrganisationSection() {
-        this.data = new ArrayList<>();
-    }
-
     public List<Organisation> getData() {
         return data;
-    }
-
-    @Override
-    protected void saveToData(Organisation dataNew) {
-        data.add(dataNew);
-    }
-
-    @Override
-    protected void delete(Organisation dataToDelete) {
-        data.remove(dataToDelete);
     }
 
     @Override
@@ -60,3 +51,4 @@ public class OrganisationSection extends AbstractSection<Organisation> {
         return dataText.toString();
     }
 }
+

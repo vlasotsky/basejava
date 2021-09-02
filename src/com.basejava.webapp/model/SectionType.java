@@ -10,7 +10,7 @@ public enum SectionType {
     EXPERIENCE("Work experience"),
     EDUCATION("Education");
 
-    private String title;
+    private final String title;
 
     SectionType(String title) {
         this.title = title;

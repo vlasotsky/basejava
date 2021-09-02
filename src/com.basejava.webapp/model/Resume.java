@@ -1,19 +1,27 @@
 package com.basejava.webapp.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final String uuid;
-    private final String fullName;
+    private String uuid;
+    private String fullName;
 
     private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
-    private final Map<SectionType, AbstractSection<?>> sections = new EnumMap<>(SectionType.class);
+    private final Map<SectionType, Section<?>> sections = new EnumMap<>(SectionType.class);
+
+    public Resume() {
+    }
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -31,7 +39,7 @@ public class Resume implements Serializable {
         return contacts;
     }
 
-    public Map<SectionType, AbstractSection<?>> getAllSections() {
+    public Map<SectionType, Section<?>> getAllSections() {
         return sections;
     }
 
@@ -49,7 +57,7 @@ public class Resume implements Serializable {
         }
     }
 
-    public void saveSection(SectionType type, AbstractSection<?> section) {
+    public void saveSection(SectionType type, Section<?> section) {
         this.getAllSections().put(type, section);
     }
 
@@ -79,7 +87,7 @@ public class Resume implements Serializable {
             sb.append(entry.getValue()).append('\n');
         }
         sb.append("_____________________________________").append("\n~Sections:\n");
-        for (Map.Entry<SectionType, AbstractSection<?>> entry : sections.entrySet()) {
+        for (Map.Entry<SectionType, Section<?>> entry : sections.entrySet()) {
             sb.append(entry.getKey()).append(":\n");
             sb.append(entry.getValue()).append('\n');
         }

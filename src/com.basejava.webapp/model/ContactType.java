@@ -9,9 +9,6 @@ public enum ContactType {
     GITHUB_ACCOUNT("Github account"),
     STACKOVERFLOW_ACCOUNT("StackOverflow account");
 
-    private final String title;
-
     ContactType(String title) {
-        this.title = title;
     }
 }

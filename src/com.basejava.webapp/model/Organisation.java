@@ -1,5 +1,10 @@
 package com.basejava.webapp.model;
 
+import util.YearMonthAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -9,11 +14,14 @@ import java.util.Objects;
 
 import static java.time.YearMonth.of;
 
-public class Organisation  implements Serializable {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Organisation implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    private final Link homePage;
+    private Link homePage;
     private List<Position> positions = new ArrayList<>();
+
+    public Organisation() {
+    }
 
     public Organisation(String name, String url, Position... positions) {
         this(new Link(name, url), Arrays.asList(positions));
@@ -57,11 +65,17 @@ public class Organisation  implements Serializable {
         return sb.toString();
     }
 
-    public static class Position  implements Serializable{
-        private final YearMonth startDate;
-        private final YearMonth endDate;
-        private final String title;
-        private final String description;
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class Position implements Serializable {
+        @XmlJavaTypeAdapter(YearMonthAdapter.class)
+        private YearMonth startDate;
+        @XmlJavaTypeAdapter(YearMonthAdapter.class)
+        private YearMonth endDate;
+        private String title;
+        private String description;
+
+        public Position() {
+        }
 
         public Position(int startYear, int startMonth, String title, String description) {
             this(of(startYear, startMonth), YearMonth.now(), title, description);

@@ -1,27 +1,22 @@
 package com.basejava.webapp.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public class TextSection extends AbstractSection<String> {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class TextSection extends Section<String> {
     private static final long serialVersionUID = 1L;
 
     private String description;
 
+    public TextSection() {
+    }
+
     public TextSection(String description) {
         Objects.requireNonNull(description, "Description must not be null");
         this.description = description;
-    }
-
-    @Override
-    protected void saveToData(String dataNew) {
-        description += ' ' + dataNew;
-    }
-
-    @Override
-    protected void delete(String dataToDelete) {
-        replaceData(dataToDelete);
-        System.out.println("Section was updated");
     }
 
     @Override
