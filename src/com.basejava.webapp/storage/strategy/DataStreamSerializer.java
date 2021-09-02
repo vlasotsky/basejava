@@ -12,6 +12,8 @@ import com.basejava.webapp.model.TextSection;
 import java.io.*;
 import java.time.YearMonth;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DataStreamSerializer implements StreamSerializer {
     @Override
@@ -44,14 +46,13 @@ public class DataStreamSerializer implements StreamSerializer {
             String fullName = dataInputStream.readUTF();
             Resume resume = new Resume(uuid, fullName);
             Map<ContactType, String> allContacts = resume.getAllContacts();
-            int sizeOfContacts = dataInputStream.readInt();
-            for (int i = 0; i < sizeOfContacts; i++) {
+            int numContacts = dataInputStream.readInt();
+            for (int i = 0; i < numContacts; i++) {
                 allContacts.put(ContactType.valueOf(dataInputStream.readUTF()), dataInputStream.readUTF());
             }
-            int sizeOfSections = dataInputStream.readInt();
-//            String data = dataInputStream.readUTF();
+            int numSections = dataInputStream.readInt();
             Map<SectionType, Section<?>> allSections = resume.getAllSections();
-            for (int i = 0; i < sizeOfSections; i++) {
+            for (int i = 0; i < numSections; i++) {
                 String readData = dataInputStream.readUTF();
                 switch (readData) {
                     case "OBJECTIVE" -> allSections.put(SectionType.OBJECTIVE, new TextSection(dataInputStream.readUTF()));
@@ -59,10 +60,15 @@ public class DataStreamSerializer implements StreamSerializer {
                     case "PERSONAL" -> allSections.put(SectionType.PERSONAL, new TextSection(dataInputStream.readUTF()));
                     case "ACHIEVEMENTS" -> allSections.put(SectionType.ACHIEVEMENTS, new ListSection(dataInputStream.readUTF()));
                     case "EXPERIENCE" -> {
-                        String data = dataInputStream.readUTF();
-//                        String data1 = dataInputStream.readUTF();
+                        String organisation = dataInputStream.readLine();
+                        String link = dataInputStream.readLine();
+                        String period = dataInputStream.readLine();
+                        String title = dataInputStream.readLine();
+                        String description = dataInputStream.readLine();
+                        int[] dates = findDates(period);
+
                         allSections.put(SectionType.EXPERIENCE, new OrganisationSection(
-                                new Organisation(dataInputStream.readUTF(), dataInputStream.readUTF(), new Organisation.Position(YearMonth.parse(dataInputStream.readUTF()), YearMonth.parse(dataInputStream.readUTF()), dataInputStream.readUTF(), dataInputStream.readUTF()))));
+                                new Organisation(dataInputStream.readUTF(), dataInputStream.readUTF(), new Organisation.Position(YearMonth.of(findDates(period)[0], findDates(period)[1]), YearMonth.of(findDates(period)[2], findDates(period)[3]), dataInputStream.readUTF(), dataInputStream.readUTF()))));
                     }
                     case "EDUCATION" -> allSections.put(SectionType.EDUCATION, new OrganisationSection());
                 }
@@ -71,5 +77,17 @@ public class DataStreamSerializer implements StreamSerializer {
             //anonymous classes, lambdas, maximum code reduction
             return resume;
         }
+    }
+
+    private int[] findDates(String period) {
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(period);
+        int[] arr = new int[4];
+        int i = 0;
+        while (matcher.find()) {
+            arr[i] = Integer.parseInt(matcher.group());
+            i++;
+        }
+        return arr;
     }
 }
