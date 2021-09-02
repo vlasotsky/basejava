@@ -60,15 +60,15 @@ public class DataStreamSerializer implements StreamSerializer {
                     case "PERSONAL" -> allSections.put(SectionType.PERSONAL, new TextSection(dataInputStream.readUTF()));
                     case "ACHIEVEMENTS" -> allSections.put(SectionType.ACHIEVEMENTS, new ListSection(dataInputStream.readUTF()));
                     case "EXPERIENCE" -> {
-                        String organisation = dataInputStream.readLine();
-                        String link = dataInputStream.readLine();
+                        String organisation = dataInputStream.readLine().replaceAll(".?Organisation: ", "");
+                        String link = dataInputStream.readLine().replaceAll("Link: ", "");
                         String period = dataInputStream.readLine();
                         String title = dataInputStream.readLine();
                         String description = dataInputStream.readLine();
                         int[] dates = findDates(period);
 
                         allSections.put(SectionType.EXPERIENCE, new OrganisationSection(
-                                new Organisation(dataInputStream.readUTF(), dataInputStream.readUTF(), new Organisation.Position(YearMonth.of(findDates(period)[0], findDates(period)[1]), YearMonth.of(findDates(period)[2], findDates(period)[3]), dataInputStream.readUTF(), dataInputStream.readUTF()))));
+                                new Organisation(organisation, link, new Organisation.Position(YearMonth.of(findDates(period)[0], findDates(period)[1]), YearMonth.of(findDates(period)[2], findDates(period)[3]), dataInputStream.readUTF(), dataInputStream.readUTF()))));
                     }
                     case "EDUCATION" -> allSections.put(SectionType.EDUCATION, new OrganisationSection());
                 }
