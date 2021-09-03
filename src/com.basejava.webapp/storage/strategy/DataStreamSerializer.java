@@ -1,16 +1,18 @@
 package com.basejava.webapp.storage.strategy;
 
 import com.basejava.webapp.model.ContactType;
+import com.basejava.webapp.model.Link;
 import com.basejava.webapp.model.ListSection;
-import com.basejava.webapp.model.Organisation;
-import com.basejava.webapp.model.OrganisationSection;
+import com.basejava.webapp.model.Organization;
+import com.basejava.webapp.model.OrganizationSection;
 import com.basejava.webapp.model.Resume;
 import com.basejava.webapp.model.Section;
 import com.basejava.webapp.model.SectionType;
 import com.basejava.webapp.model.TextSection;
 
 import java.io.*;
-import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,8 +29,6 @@ public class DataStreamSerializer implements StreamSerializer {
                 dataOutputStream.writeUTF(entry.getKey().name());
                 dataOutputStream.writeUTF(entry.getValue());
             }
-            // TODO implement sections
-            //anonymous classes, lambdas, maximum code reduction
             Map<SectionType, Section<?>> allSections = resume.getAllSections();
             dataOutputStream.writeInt(allSections.size());
             for (Map.Entry<SectionType, Section<?>> entry : allSections.entrySet()) {
@@ -50,32 +50,91 @@ public class DataStreamSerializer implements StreamSerializer {
             for (int i = 0; i < numContacts; i++) {
                 allContacts.put(ContactType.valueOf(dataInputStream.readUTF()), dataInputStream.readUTF());
             }
+
             int numSections = dataInputStream.readInt();
             Map<SectionType, Section<?>> allSections = resume.getAllSections();
             for (int i = 0; i < numSections; i++) {
                 String readData = dataInputStream.readUTF();
                 switch (readData) {
-                    case "OBJECTIVE" -> allSections.put(SectionType.OBJECTIVE, new TextSection(dataInputStream.readUTF()));
-                    case "QUALIFICATIONS" -> allSections.put(SectionType.QUALIFICATIONS, new ListSection(dataInputStream.readUTF()));
-                    case "PERSONAL" -> allSections.put(SectionType.PERSONAL, new TextSection(dataInputStream.readUTF()));
-                    case "ACHIEVEMENTS" -> allSections.put(SectionType.ACHIEVEMENTS, new ListSection(dataInputStream.readUTF()));
-                    case "EXPERIENCE" -> {
-                        String organisation = dataInputStream.readLine().replaceAll(".?Organisation: ", "");
-                        String link = dataInputStream.readLine().replaceAll("Link: ", "");
-                        String period = dataInputStream.readLine();
-                        String title = dataInputStream.readLine();
-                        String description = dataInputStream.readLine();
-                        allSections.put(SectionType.EXPERIENCE, new OrganisationSection(
-                                new Organisation(organisation, link, new Organisation.Position(YearMonth.of(findDates(period)[0], findDates(period)[1]), YearMonth.of(findDates(period)[2], findDates(period)[3]), title, description))));
+                    case "OBJECTIVE" -> {
+                        allSections.put(SectionType.OBJECTIVE, new TextSection(removeEmbellishments(dataInputStream.readUTF())));
                     }
-                    //...
-                    case "EDUCATION" -> allSections.put(SectionType.EDUCATION, new OrganisationSection());
+                    case "QUALIFICATIONS" -> {
+                        saveStringSection(resume, SectionType.QUALIFICATIONS, new ListSection(getListSection(dataInputStream.readUTF())));
+                    }
+                    case "PERSONAL" -> {
+                        saveStringSection(resume, SectionType.PERSONAL, new TextSection(removeEmbellishments(dataInputStream.readUTF())));
+                    }
+                    case "ACHIEVEMENTS" -> {
+                        allSections.put(SectionType.ACHIEVEMENTS, new ListSection(removeEmbellishments(dataInputStream.readUTF())));
+                    }
+                    case "EXPERIENCE" -> {
+                        String some = dataInputStream.readUTF();
+                        String[] data = getDataFromString(some);
+                        List<Organization> organizationList = new ArrayList<>();
+                        for (String element : data) {
+                            organizationList.add(getExperienceOrganisation(element));
+                        }
+                        resume.getAllSections().put(SectionType.EXPERIENCE, new OrganizationSection(organizationList));
+                    }
+                    case "EDUCATION" -> {
+                        String some = dataInputStream.readUTF();
+                        String[] data = getDataFromString(some);
+                        List<Organization> organizationList = new ArrayList<>();
+                        for (String element : data) {
+                            organizationList.add(getEducationOrganisation(element));
+                        }
+                        resume.getAllSections().put(SectionType.EDUCATION, new OrganizationSection(organizationList));
+                    }
                 }
             }
-            // TODO implement sections
-            //anonymous classes, lambdas, maximum code reduction
             return resume;
         }
+    }
+
+    private String[] getDataFromString(String data) {
+        return data.split("\n\n");
+    }
+
+    private String[] getListSection(String data) {
+        String[] arr = data.split("\n");
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = arr[i].substring(1);
+        }
+        return arr;
+    }
+
+    private Organization getExperienceOrganisation(String data) {
+        String[] arr = data.split("\n");
+
+        String organisation = arr[0].replaceAll("Organisation: ", "");
+        if (arr.length == 5) {
+            String link = arr[1].replaceAll("Link: ", "");
+            int[] period = findDates(arr[2]);
+            String title = arr[3].replaceAll("Title: ", "");
+            String description = arr[4].replaceAll("Description: ", "");
+            return new Organization(organisation, link, new Organization.Position(period[0], period[1], period[2], period[3], title, description));
+        } else {
+            int[] period = findDates(arr[1]);
+            String title = arr[2].replaceAll("Title: ", "");
+            String description = arr[3].replaceAll("Description: ", "");
+            return new Organization(new Link(organisation), new Organization.Position(period[0], period[1], period[2], period[3], title, description));
+        }
+    }
+
+    private Organization getEducationOrganisation(String data) {
+        String[] arr = data.split("\n");
+        String organisation = arr[0].replaceAll("Organisation: ", "");
+        String link = arr[1].replaceAll("Link: ", "");
+
+        List<Organization.Position> list = new ArrayList<>();
+        for (int i = 3, j = i - 1; i < arr.length; i += 2) {
+            int[] period = findDates(arr[j].replaceAll("Period: ", ""));
+            String title = arr[i].replaceAll("Title: ", "");
+            list.add(new Organization.Position(period[0], period[1], period[2], period[3], title));
+            j += 2;
+        }
+        return new Organization(new Link(organisation, link), list);
     }
 
     private int[] findDates(String period) {
@@ -88,5 +147,13 @@ public class DataStreamSerializer implements StreamSerializer {
             i++;
         }
         return arr;
+    }
+
+    private void saveStringSection(Resume resume, SectionType type, Section section) {
+        resume.getAllSections().put(type, section);
+    }
+
+    private String removeEmbellishments(String data) {
+        return data.substring(1, data.length() - 1);
     }
 }

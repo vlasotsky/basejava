@@ -95,5 +95,4 @@ public class Resume implements Serializable {
         return uuid + '(' + fullName + ')' + '\n'
                 + sb;
     }
-
 }

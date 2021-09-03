@@ -2,8 +2,8 @@ package com.basejava.webapp.storage.strategy;
 
 import com.basejava.webapp.model.Link;
 import com.basejava.webapp.model.ListSection;
-import com.basejava.webapp.model.Organisation;
-import com.basejava.webapp.model.OrganisationSection;
+import com.basejava.webapp.model.Organization;
+import com.basejava.webapp.model.OrganizationSection;
 import com.basejava.webapp.model.Resume;
 import com.basejava.webapp.model.TextSection;
 import com.basejava.webapp.util.XmlParser;
@@ -16,8 +16,8 @@ public class XmlStreamSerializer implements StreamSerializer {
 
     public XmlStreamSerializer() {
         xmlParser = new XmlParser(
-                Resume.class, Organisation.class, Link.class,
-                OrganisationSection.class, TextSection.class, ListSection.class, Organisation.Position.class);
+                Resume.class, Organization.class, Link.class,
+                OrganizationSection.class, TextSection.class, ListSection.class, Organization.Position.class);
     }
 
     @Override

@@ -15,24 +15,24 @@ import java.util.Objects;
 import static java.time.YearMonth.of;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Organisation implements Serializable {
+public class Organization implements Serializable {
     private static final long serialVersionUID = 1L;
     private Link homePage;
     private List<Position> positions = new ArrayList<>();
 
-    public Organisation() {
+    public Organization() {
     }
 
-    public Organisation(String name, String url, Position... positions) {
+    public Organization(String name, String url, Position... positions) {
         this(new Link(name, url), Arrays.asList(positions));
     }
 
-    public Organisation(Link homePage, List<Position> positions) {
+    public Organization(Link homePage, List<Position> positions) {
         this.homePage = homePage;
         this.positions = positions;
     }
 
-    public Organisation(Link homePage, Position... positions) {
+    public Organization(Link homePage, Position... positions) {
         this(homePage, Arrays.asList(positions));
     }
 
@@ -41,7 +41,7 @@ public class Organisation implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Organisation that = (Organisation) o;
+        Organization that = (Organization) o;
         return Objects.equals(homePage, that.homePage) &&
                 Objects.equals(positions, that.positions);
     }
