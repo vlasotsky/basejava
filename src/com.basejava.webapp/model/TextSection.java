@@ -2,11 +2,13 @@ package com.basejava.webapp.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.io.Serial;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TextSection extends Section<String> {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String description;
@@ -32,7 +34,7 @@ public class TextSection extends Section<String> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TextSection)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         TextSection that = (TextSection) o;
         return Objects.equals(description, that.description);
     }

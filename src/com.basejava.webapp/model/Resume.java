@@ -3,6 +3,7 @@ package com.basejava.webapp.model;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String uuid;
@@ -68,7 +70,7 @@ public class Resume implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Resume)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Resume resume = (Resume) o;
         return Objects.equals(uuid, resume.uuid) && Objects.equals(fullName, resume.fullName) && Objects.equals(contacts, resume.contacts) && Objects.equals(sections, resume.sections);
     }

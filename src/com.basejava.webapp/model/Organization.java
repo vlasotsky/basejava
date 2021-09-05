@@ -5,6 +5,7 @@ import com.basejava.webapp.util.YearMonthAdapter;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import static java.time.YearMonth.of;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     private Link homePage;
     private List<Position> positions = new ArrayList<>();
@@ -36,14 +38,12 @@ public class Organization implements Serializable {
         this(homePage, Arrays.asList(positions));
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
-        return Objects.equals(homePage, that.homePage) &&
-                Objects.equals(positions, that.positions);
+        return Objects.equals(homePage, that.homePage) && Objects.equals(positions, that.positions);
     }
 
     @Override
@@ -99,15 +99,28 @@ public class Organization implements Serializable {
             this.description = description;
         }
 
+//        @Override
+//        public boolean equals(Object o) {
+//            if (this == o) return true;
+//            if (o == null || getClass() != o.getClass()) return false;
+//            Position position = (Position) o;
+//            return Objects.equals(startDate, position.startDate) &&
+//                    Objects.equals(endDate, position.endDate) &&
+//                    Objects.equals(title, position.title) &&
+//                    Objects.equals(description, position.description);
+//        }
+//
+//        @Override
+//        public int hashCode() {
+//            return Objects.hash(startDate, endDate, title, description);
+//        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Position position = (Position) o;
-            return Objects.equals(startDate, position.startDate) &&
-                    Objects.equals(endDate, position.endDate) &&
-                    Objects.equals(title, position.title) &&
-                    Objects.equals(description, position.description);
+            return Objects.equals(startDate, position.startDate) && Objects.equals(endDate, position.endDate) && Objects.equals(title, position.title) && Objects.equals(description, position.description);
         }
 
         @Override

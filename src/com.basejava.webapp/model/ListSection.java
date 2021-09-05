@@ -2,6 +2,7 @@ package com.basejava.webapp.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ListSection extends Section<String> {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private List<String> data = new ArrayList<>();
@@ -37,7 +39,7 @@ public class ListSection extends Section<String> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ListSection)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         ListSection that = (ListSection) o;
         return Objects.equals(data, that.data);
     }

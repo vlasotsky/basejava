@@ -56,18 +56,10 @@ public class DataStreamSerializer implements StreamSerializer {
             for (int i = 0; i < numSections; i++) {
                 String readData = dataInputStream.readUTF();
                 switch (readData) {
-                    case "OBJECTIVE" -> {
-                        allSections.put(SectionType.OBJECTIVE, new TextSection(removeEmbellishments(dataInputStream.readUTF())));
-                    }
-                    case "QUALIFICATIONS" -> {
-                        saveStringSection(resume, SectionType.QUALIFICATIONS, new ListSection(getListSection(dataInputStream.readUTF())));
-                    }
-                    case "PERSONAL" -> {
-                        saveStringSection(resume, SectionType.PERSONAL, new TextSection(removeEmbellishments(dataInputStream.readUTF())));
-                    }
-                    case "ACHIEVEMENTS" -> {
-                        allSections.put(SectionType.ACHIEVEMENTS, new ListSection(removeEmbellishments(dataInputStream.readUTF())));
-                    }
+                    case "OBJECTIVE" -> allSections.put(SectionType.OBJECTIVE, new TextSection(removeEmbellishments(dataInputStream.readUTF())));
+                    case "QUALIFICATIONS" -> saveStringSection(resume, SectionType.QUALIFICATIONS, new ListSection(getListSection(dataInputStream.readUTF())));
+                    case "PERSONAL" -> saveStringSection(resume, SectionType.PERSONAL, new TextSection(removeEmbellishments(dataInputStream.readUTF())));
+                    case "ACHIEVEMENTS" -> allSections.put(SectionType.ACHIEVEMENTS, new ListSection(getListSection(dataInputStream.readUTF())));
                     case "EXPERIENCE" -> {
                         String some = dataInputStream.readUTF();
                         String[] data = getDataFromString(some);
@@ -75,7 +67,8 @@ public class DataStreamSerializer implements StreamSerializer {
                         for (String element : data) {
                             organizationList.add(getExperienceOrganisation(element));
                         }
-                        resume.getAllSections().put(SectionType.EXPERIENCE, new OrganizationSection(organizationList));
+                        saveStringSection(resume, SectionType.EXPERIENCE, new OrganizationSection(organizationList));
+
                     }
                     case "EDUCATION" -> {
                         String some = dataInputStream.readUTF();
@@ -84,7 +77,7 @@ public class DataStreamSerializer implements StreamSerializer {
                         for (String element : data) {
                             organizationList.add(getEducationOrganisation(element));
                         }
-                        resume.getAllSections().put(SectionType.EDUCATION, new OrganizationSection(organizationList));
+                        saveStringSection(resume, SectionType.EDUCATION, new OrganizationSection(organizationList));
                     }
                 }
             }
@@ -149,7 +142,7 @@ public class DataStreamSerializer implements StreamSerializer {
         return arr;
     }
 
-    private void saveStringSection(Resume resume, SectionType type, Section section) {
+    private void saveStringSection(Resume resume, SectionType type, Section<?> section) {
         resume.getAllSections().put(type, section);
     }
 
