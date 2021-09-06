@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class OrganizationSection extends Section<Organization> {
+public class OrganizationSection extends Section {
     @Serial
     private static final long serialVersionUID = 1L;
     private List<Organization> data = new ArrayList<>();

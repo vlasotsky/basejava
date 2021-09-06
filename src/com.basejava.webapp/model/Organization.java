@@ -19,7 +19,7 @@ import static java.time.YearMonth.of;
 public class Organization implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private Link homePage;
+    private Link link;
     private List<Position> positions = new ArrayList<>();
 
     public Organization() {
@@ -29,13 +29,21 @@ public class Organization implements Serializable {
         this(new Link(name, url), Arrays.asList(positions));
     }
 
-    public Organization(Link homePage, List<Position> positions) {
-        this.homePage = homePage;
+    public Organization(Link link, List<Position> positions) {
+        this.link = link;
         this.positions = positions;
     }
 
-    public Organization(Link homePage, Position... positions) {
-        this(homePage, Arrays.asList(positions));
+    public Organization(Link link, Position... positions) {
+        this(link, Arrays.asList(positions));
+    }
+
+    public Link getLink() {
+        return link;
+    }
+
+    public List<Position> getPositions() {
+        return positions;
     }
 
     @Override
@@ -43,21 +51,21 @@ public class Organization implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Organization that = (Organization) o;
-        return Objects.equals(homePage, that.homePage) && Objects.equals(positions, that.positions);
+        return Objects.equals(link, that.link) && Objects.equals(positions, that.positions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(homePage, positions);
+        return Objects.hash(link, positions);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (this.homePage.getUrl() == null) {
-            sb.append("Organisation: ").append(this.homePage.getName()).append('\n');
+        if (this.link.getUrl() == null) {
+            sb.append("Organisation: ").append(this.link.getName()).append('\n');
         } else {
-            sb.append(homePage).append('\n');
+            sb.append(link).append('\n');
         }
         for (Position position : positions) {
             sb.append(position).append('\n');
@@ -99,21 +107,31 @@ public class Organization implements Serializable {
             this.description = description;
         }
 
-//        @Override
-//        public boolean equals(Object o) {
-//            if (this == o) return true;
-//            if (o == null || getClass() != o.getClass()) return false;
-//            Position position = (Position) o;
-//            return Objects.equals(startDate, position.startDate) &&
-//                    Objects.equals(endDate, position.endDate) &&
-//                    Objects.equals(title, position.title) &&
-//                    Objects.equals(description, position.description);
-//        }
-//
-//        @Override
-//        public int hashCode() {
-//            return Objects.hash(startDate, endDate, title, description);
-//        }
+        public Position(YearMonth startDate, YearMonth endDate, String title) {
+            Objects.requireNonNull(startDate, "startDate must not be null");
+            Objects.requireNonNull(endDate, "endDate must not be null");
+            Objects.requireNonNull(title, "title must not be null");
+            this.startDate = startDate;
+            this.endDate = endDate;
+            this.title = title;
+            this.description = null;
+        }
+
+        public YearMonth getStartDate() {
+            return startDate;
+        }
+
+        public YearMonth getEndDate() {
+            return endDate;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
 
         @Override
         public boolean equals(Object o) {

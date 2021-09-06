@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TextSection extends Section<String> {
+public class TextSection extends Section {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -19,6 +19,10 @@ public class TextSection extends Section<String> {
     public TextSection(String description) {
         Objects.requireNonNull(description, "Description must not be null");
         this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override
