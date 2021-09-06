@@ -38,7 +38,6 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    @Deprecated
     @Override
     public Resume doRead(InputStream inputStream) throws IOException {
         try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
@@ -68,7 +67,6 @@ public class DataStreamSerializer implements StreamSerializer {
                             organizationList.add(getExperienceOrganisation(element));
                         }
                         saveStringSection(resume, SectionType.EXPERIENCE, new OrganizationSection(organizationList));
-
                     }
                     case "EDUCATION" -> {
                         String[] data = getDataFromString(dataInputStream.readUTF());
