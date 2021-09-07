@@ -33,36 +33,33 @@ public class DataStreamSerializer implements StreamSerializer {
             dataOutputStream.writeInt(allSections.size());
 
             for (Map.Entry<SectionType, Section> entry : allSections.entrySet()) {
-                switch (entry.getKey()) {
-                    case PERSONAL -> writeTextSection(dataOutputStream, SectionType.PERSONAL, resume);
-                    case OBJECTIVE -> writeTextSection(dataOutputStream, SectionType.OBJECTIVE, resume);
-                    case QUALIFICATIONS -> writeListSection(dataOutputStream, SectionType.QUALIFICATIONS, resume);
-                    case ACHIEVEMENTS -> writeListSection(dataOutputStream, SectionType.ACHIEVEMENTS, resume);
-                    case EXPERIENCE -> writeOrganisationSection(dataOutputStream, SectionType.EXPERIENCE, resume);
-                    case EDUCATION -> writeOrganisationSection(dataOutputStream, SectionType.EDUCATION, resume);
+                dataOutputStream.writeUTF(entry.getKey().name());
+
+                Section value = entry.getValue();
+                String sectionName = value.getClass().getSimpleName();
+                switch (sectionName) {
+                    case "TextSection" -> writeTextSection(dataOutputStream, (TextSection) value);
+                    case "ListSection" -> writeListSection(dataOutputStream, (ListSection) value);
+                    case "OrganizationSection" -> writeOrganisationSection(dataOutputStream, (OrganizationSection) value);
                 }
             }
         }
     }
 
-    private void writeTextSection(DataOutputStream dataOutputStream, SectionType sectionType, Resume resume) {
+    private void writeTextSection(DataOutputStream dataOutputStream, TextSection section) {
         try {
-            dataOutputStream.writeUTF(sectionType.name());
-            TextSection textSection = (TextSection) resume.getAllSections().get(sectionType);
-            dataOutputStream.writeUTF(textSection.getDescription());
+            dataOutputStream.writeUTF(section.getDescription());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void writeListSection(DataOutputStream dataOutputStream, SectionType sectionType, Resume resume) {
+    private void writeListSection(DataOutputStream dataOutputStream, ListSection section) {
         try {
-            dataOutputStream.writeUTF(sectionType.name());
-            ListSection listSection = (ListSection) resume.getAllSections().get(sectionType);
-            int size = listSection.getData().size();
+            int size = section.getData().size();
             dataOutputStream.writeInt(size);
 
-            List<String> data = listSection.getData();
+            List<String> data = section.getData();
             for (int i = 0; i < size; i++) {
                 dataOutputStream.writeUTF(data.get(i));
             }
@@ -71,28 +68,27 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void writeOrganisationSection(DataOutputStream dataOutputStream, SectionType sectionType, Resume resume) {
+    private void writeOrganisationSection(DataOutputStream dataOutputStream, OrganizationSection section) {
         try {
-            dataOutputStream.writeUTF(sectionType.name());
-            OrganizationSection organizationSection = (OrganizationSection) resume.getAllSections().get(sectionType);
-            int numberOfOrganisations = organizationSection.getData().size();
+            int numberOfOrganisations = section.getData().size();
             dataOutputStream.writeInt(numberOfOrganisations);
 
-            for (Organization element : organizationSection.getData()) {
+            for (Organization element : section.getData()) {
                 Link link = element.getLink();
                 dataOutputStream.writeUTF(link.getName());
-                if (link.getUrl() != null) {
-                    dataOutputStream.writeBoolean(true);
-                    dataOutputStream.writeUTF(link.getUrl());
+                if (link.getUrl() == null) {
+                    dataOutputStream.writeUTF("");
                 } else {
-                    dataOutputStream.writeBoolean(false);
+                    dataOutputStream.writeUTF(link.getUrl());
                 }
                 dataOutputStream.writeInt(element.getPositions().size());
                 for (Organization.Position position : element.getPositions()) {
                     dataOutputStream.writeUTF(position.getStartDate().toString());
                     dataOutputStream.writeUTF(position.getEndDate().toString());
                     dataOutputStream.writeUTF(position.getTitle());
-                    if (sectionType.equals(SectionType.EXPERIENCE)) {
+                    if (position.getDescription() == null) {
+                        dataOutputStream.writeUTF("");
+                    } else {
                         dataOutputStream.writeUTF(position.getDescription());
                     }
                 }
@@ -135,13 +131,12 @@ public class DataStreamSerializer implements StreamSerializer {
             List<Organization> organizationList = new ArrayList<>();
             for (int j = 0; j < numberOfOrganizations; j++) {
                 String name = dataInputStream.readUTF();
-                boolean urlExists = dataInputStream.readBoolean();
                 Link link;
-                if (urlExists) {
-                    String url = dataInputStream.readUTF();
-                    link = new Link(name, url);
-                } else {
+                String url = dataInputStream.readUTF();
+                if (url.isEmpty()) {
                     link = new Link(name);
+                } else {
+                    link = new Link(name, url);
                 }
                 List<Organization.Position> positionList = new ArrayList<>();
                 int numPositions = dataInputStream.readInt();
@@ -150,11 +145,12 @@ public class DataStreamSerializer implements StreamSerializer {
                     YearMonth endDate = YearMonth.parse(dataInputStream.readUTF());
                     String title = dataInputStream.readUTF();
                     Organization.Position position;
-                    if (sectionType.equals(SectionType.EXPERIENCE)) {
-                        String description = dataInputStream.readUTF();
-                        position = new Organization.Position(startDate, endDate, title, description);
-                    } else {
+
+                    String description = dataInputStream.readUTF();
+                    if (description.isEmpty()) {
                         position = new Organization.Position(startDate, endDate, title);
+                    } else {
+                        position = new Organization.Position(startDate, endDate, title, description);
                     }
                     positionList.add(position);
                 }
