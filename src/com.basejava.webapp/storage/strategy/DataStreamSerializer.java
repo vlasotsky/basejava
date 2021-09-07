@@ -33,14 +33,14 @@ public class DataStreamSerializer implements StreamSerializer {
             dataOutputStream.writeInt(allSections.size());
 
             for (Map.Entry<SectionType, Section> entry : allSections.entrySet()) {
-                dataOutputStream.writeUTF(entry.getKey().name());
+                SectionType key = entry.getKey();
+                dataOutputStream.writeUTF(key.name());
 
                 Section value = entry.getValue();
-                String sectionName = value.getClass().getSimpleName();
-                switch (sectionName) {
-                    case "TextSection" -> writeTextSection(dataOutputStream, (TextSection) value);
-                    case "ListSection" -> writeListSection(dataOutputStream, (ListSection) value);
-                    case "OrganizationSection" -> writeOrganisationSection(dataOutputStream, (OrganizationSection) value);
+                switch (key) {
+                    case PERSONAL, OBJECTIVE -> writeTextSection(dataOutputStream, (TextSection) value);
+                    case QUALIFICATIONS, ACHIEVEMENTS -> writeListSection(dataOutputStream, (ListSection) value);
+                    case EXPERIENCE, EDUCATION -> writeOrganisationSection(dataOutputStream, (OrganizationSection) value);
                 }
             }
         }
@@ -112,13 +112,11 @@ public class DataStreamSerializer implements StreamSerializer {
             int numSections = dataInputStream.readInt();
             Map<SectionType, Section> allSections = resume.getAllSections();
             for (int i = 0; i < numSections; i++) {
-                switch (SectionType.valueOf(dataInputStream.readUTF())) {
-                    case OBJECTIVE -> allSections.put(SectionType.OBJECTIVE, new TextSection(dataInputStream.readUTF()));
-                    case PERSONAL -> allSections.put(SectionType.PERSONAL, new TextSection(dataInputStream.readUTF()));
-                    case QUALIFICATIONS -> readListSection(dataInputStream, SectionType.QUALIFICATIONS, resume);
-                    case ACHIEVEMENTS -> readListSection(dataInputStream, SectionType.ACHIEVEMENTS, resume);
-                    case EXPERIENCE -> readOrganisationSection(dataInputStream, SectionType.EXPERIENCE, resume);
-                    case EDUCATION -> readOrganisationSection(dataInputStream, SectionType.EDUCATION, resume);
+                SectionType type = SectionType.valueOf(dataInputStream.readUTF());
+                switch (type) {
+                    case OBJECTIVE, PERSONAL -> allSections.put(type, new TextSection(dataInputStream.readUTF()));
+                    case QUALIFICATIONS, ACHIEVEMENTS -> readListSection(dataInputStream, type, resume);
+                    case EXPERIENCE, EDUCATION -> readOrganisationSection(dataInputStream, type, resume);
                 }
             }
             return resume;
