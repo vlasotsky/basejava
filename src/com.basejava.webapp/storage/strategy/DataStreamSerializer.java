@@ -1,5 +1,6 @@
 package com.basejava.webapp.storage.strategy;
 
+import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.ContactType;
 import com.basejava.webapp.model.Link;
 import com.basejava.webapp.model.ListSection;
@@ -33,14 +34,14 @@ public class DataStreamSerializer implements StreamSerializer {
             dataOutputStream.writeInt(allSections.size());
 
             for (Map.Entry<SectionType, Section> entry : allSections.entrySet()) {
-                SectionType key = entry.getKey();
-                dataOutputStream.writeUTF(key.name());
+                SectionType sectionType = entry.getKey();
+                dataOutputStream.writeUTF(sectionType.name());
 
-                Section value = entry.getValue();
-                switch (key) {
-                    case PERSONAL, OBJECTIVE -> writeTextSection(dataOutputStream, (TextSection) value);
-                    case QUALIFICATIONS, ACHIEVEMENTS -> writeListSection(dataOutputStream, (ListSection) value);
-                    case EXPERIENCE, EDUCATION -> writeOrganisationSection(dataOutputStream, (OrganizationSection) value);
+                Section section = entry.getValue();
+                switch (sectionType) {
+                    case PERSONAL, OBJECTIVE -> writeTextSection(dataOutputStream, (TextSection) section);
+                    case QUALIFICATIONS, ACHIEVEMENTS -> writeListSection(dataOutputStream, (ListSection) section);
+                    case EXPERIENCE, EDUCATION -> writeOrganisationSection(dataOutputStream, (OrganizationSection) section);
                 }
             }
         }
@@ -50,7 +51,7 @@ public class DataStreamSerializer implements StreamSerializer {
         try {
             dataOutputStream.writeUTF(section.getDescription());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new StorageException("Error while writing a TextSection", e);
         }
     }
 
@@ -64,7 +65,7 @@ public class DataStreamSerializer implements StreamSerializer {
                 dataOutputStream.writeUTF(data.get(i));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new StorageException("Error while writing a ListSection", e);
         }
     }
 
@@ -94,7 +95,7 @@ public class DataStreamSerializer implements StreamSerializer {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new StorageException("Error while writing an OrganizationSection", e);
         }
     }
 
@@ -156,7 +157,7 @@ public class DataStreamSerializer implements StreamSerializer {
             }
             resume.getAllSections().put(sectionType, new OrganizationSection(organizationList));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new StorageException("Error while reading an OrganizationSection", resume.getUuid(), e);
         }
     }
 
@@ -170,7 +171,7 @@ public class DataStreamSerializer implements StreamSerializer {
             }
             resume.getAllSections().put(sectionType, new ListSection(list));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new StorageException("Error while reading a ListSection", resume.getUuid(), e);
         }
     }
 }
