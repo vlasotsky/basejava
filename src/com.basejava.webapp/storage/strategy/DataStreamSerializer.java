@@ -13,9 +13,8 @@ import com.basejava.webapp.model.TextSection;
 
 import java.io.*;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 
 public class DataStreamSerializer implements StreamSerializer {
     @Override
@@ -25,25 +24,33 @@ public class DataStreamSerializer implements StreamSerializer {
             dataOutputStream.writeUTF(resume.getFullName());
             Map<ContactType, String> allContacts = resume.getAllContacts();
             dataOutputStream.writeInt(allContacts.size());
-            for (Map.Entry<ContactType, String> entry : allContacts.entrySet()) {
-                dataOutputStream.writeUTF(entry.getKey().name());
-                dataOutputStream.writeUTF(entry.getValue());
-            }
+
+            writeWithException(allContacts.entrySet(), o -> {
+                dataOutputStream.writeUTF(o.getKey().name());
+                dataOutputStream.writeUTF(o.getValue());
+            });
 
             Map<SectionType, Section> allSections = resume.getAllSections();
             dataOutputStream.writeInt(allSections.size());
 
-            for (Map.Entry<SectionType, Section> entry : allSections.entrySet()) {
-                SectionType sectionType = entry.getKey();
+            Set<Map.Entry<SectionType, Section>> collection = allSections.entrySet();
+            writeWithException(collection, element -> {
+                SectionType sectionType = element.getKey();
                 dataOutputStream.writeUTF(sectionType.name());
-
-                Section section = entry.getValue();
+                Section section = element.getValue();
                 switch (sectionType) {
                     case PERSONAL, OBJECTIVE -> writeTextSection(dataOutputStream, (TextSection) section);
                     case QUALIFICATIONS, ACHIEVEMENTS -> writeListSection(dataOutputStream, (ListSection) section);
                     case EXPERIENCE, EDUCATION -> writeOrganisationSection(dataOutputStream, (OrganizationSection) section);
                 }
-            }
+            });
+        }
+    }
+
+    private <T> void writeWithException(Collection<T> collection, MyFunctionalInterface<T> funcInt) throws IOException {
+        Objects.requireNonNull(funcInt);
+        for (T element : collection) {
+            funcInt.apply(element);
         }
     }
 
@@ -55,47 +62,35 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void writeListSection(DataOutputStream dataOutputStream, ListSection section) {
-        try {
-            int size = section.getData().size();
-            dataOutputStream.writeInt(size);
+    private void writeListSection(DataOutputStream dataOutputStream, ListSection section) throws IOException {
+        int size = section.getData().size();
+        dataOutputStream.writeInt(size);
 
-            List<String> data = section.getData();
-            for (int i = 0; i < size; i++) {
-                dataOutputStream.writeUTF(data.get(i));
-            }
-        } catch (IOException e) {
-            throw new StorageException("Error while writing a ListSection", e);
+        List<String> data = section.getData();
+        for (int i = 0; i < size; i++) {
+            dataOutputStream.writeUTF(data.get(i));
         }
     }
 
-    private void writeOrganisationSection(DataOutputStream dataOutputStream, OrganizationSection section) {
-        try {
-            int numberOfOrganisations = section.getData().size();
-            dataOutputStream.writeInt(numberOfOrganisations);
+    private void writeOrganisationSection(DataOutputStream dataOutputStream, OrganizationSection section) throws IOException {
+        int numberOfOrganisations = section.getData().size();
+        dataOutputStream.writeInt(numberOfOrganisations);
 
-            for (Organization element : section.getData()) {
-                Link link = element.getLink();
-                dataOutputStream.writeUTF(link.getName());
-                if (link.getUrl() == null) {
-                    dataOutputStream.writeUTF("");
-                } else {
-                    dataOutputStream.writeUTF(link.getUrl());
-                }
-                dataOutputStream.writeInt(element.getPositions().size());
-                for (Organization.Position position : element.getPositions()) {
-                    dataOutputStream.writeUTF(position.getStartDate().toString());
-                    dataOutputStream.writeUTF(position.getEndDate().toString());
-                    dataOutputStream.writeUTF(position.getTitle());
-                    if (position.getDescription() == null) {
-                        dataOutputStream.writeUTF("");
-                    } else {
-                        dataOutputStream.writeUTF(position.getDescription());
-                    }
-                }
+        for (Organization element : section.getData()) {
+            Link link = element.getLink();
+            dataOutputStream.writeUTF(link.getName());
+            if (link.getUrl() == null) {
+                dataOutputStream.writeUTF("");
+            } else {
+                dataOutputStream.writeUTF(link.getUrl());
             }
-        } catch (IOException e) {
-            throw new StorageException("Error while writing an OrganizationSection", e);
+            dataOutputStream.writeInt(element.getPositions().size());
+            for (Organization.Position position : element.getPositions()) {
+                dataOutputStream.writeUTF(position.getStartDate().toString());
+                dataOutputStream.writeUTF(position.getEndDate().toString());
+                dataOutputStream.writeUTF(position.getTitle());
+                dataOutputStream.writeUTF(position.getDescription() == null ? "" : position.getDescription());
+            }
         }
     }
 
@@ -124,54 +119,42 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void readOrganisationSection(DataInputStream dataInputStream, SectionType sectionType, Resume resume) {
-        try {
-            int numberOfOrganizations = dataInputStream.readInt();
-            List<Organization> organizationList = new ArrayList<>();
-            for (int j = 0; j < numberOfOrganizations; j++) {
-                String name = dataInputStream.readUTF();
-                Link link;
-                String url = dataInputStream.readUTF();
-                if (url.isEmpty()) {
-                    link = new Link(name);
-                } else {
-                    link = new Link(name, url);
-                }
-                List<Organization.Position> positionList = new ArrayList<>();
-                int numPositions = dataInputStream.readInt();
-                for (int k = 0; k < numPositions; k++) {
-                    YearMonth startDate = YearMonth.parse(dataInputStream.readUTF());
-                    YearMonth endDate = YearMonth.parse(dataInputStream.readUTF());
-                    String title = dataInputStream.readUTF();
-                    Organization.Position position;
-
-                    String description = dataInputStream.readUTF();
-                    if (description.isEmpty()) {
-                        position = new Organization.Position(startDate, endDate, title);
-                    } else {
-                        position = new Organization.Position(startDate, endDate, title, description);
-                    }
-                    positionList.add(position);
-                }
-                organizationList.add(new Organization(link, positionList));
+    private void readOrganisationSection(DataInputStream dataInputStream, SectionType sectionType, Resume resume) throws IOException {
+        int numberOfOrganizations = dataInputStream.readInt();
+        List<Organization> organizationList = new ArrayList<>();
+        for (int j = 0; j < numberOfOrganizations; j++) {
+            String name = dataInputStream.readUTF();
+            Link link;
+            String url = dataInputStream.readUTF();
+            if (url.isEmpty()) {
+                link = new Link(name);
+            } else {
+                link = new Link(name, url);
             }
-            resume.getAllSections().put(sectionType, new OrganizationSection(organizationList));
-        } catch (IOException e) {
-            throw new StorageException("Error while reading an OrganizationSection", resume.getUuid(), e);
+            List<Organization.Position> positionList = new ArrayList<>();
+            int numPositions = dataInputStream.readInt();
+            for (int k = 0; k < numPositions; k++) {
+                YearMonth startDate = YearMonth.parse(dataInputStream.readUTF());
+                YearMonth endDate = YearMonth.parse(dataInputStream.readUTF());
+                String title = dataInputStream.readUTF();
+                Organization.Position position;
+
+                String description = dataInputStream.readUTF();
+                position = description.isEmpty() ? new Organization.Position(startDate, endDate, title) : new Organization.Position(startDate, endDate, title, description);
+                positionList.add(position);
+            }
+            organizationList.add(new Organization(link, positionList));
         }
+        resume.getAllSections().put(sectionType, new OrganizationSection(organizationList));
     }
 
-    private void readListSection(DataInputStream dataInputStream, SectionType sectionType, Resume resume) {
-        try {
-            int size = dataInputStream.readInt();
-            List<String> list = new ArrayList<>();
-            for (int j = 0; j < size; j++) {
-                String e = dataInputStream.readUTF();
-                list.add(e);
-            }
-            resume.getAllSections().put(sectionType, new ListSection(list));
-        } catch (IOException e) {
-            throw new StorageException("Error while reading a ListSection", resume.getUuid(), e);
+    private void readListSection(DataInputStream dataInputStream, SectionType sectionType, Resume resume) throws IOException {
+        int size = dataInputStream.readInt();
+        List<String> list = new ArrayList<>();
+        for (int j = 0; j < size; j++) {
+            String e = dataInputStream.readUTF();
+            list.add(e);
         }
+        resume.getAllSections().put(sectionType, new ListSection(list));
     }
 }
