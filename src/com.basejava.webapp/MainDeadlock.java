@@ -11,12 +11,18 @@ public class MainDeadlock {
 
     private static void objectLocking(Object firstObject, Object secondObject) {
         synchronized (secondObject) {
-            System.out.println(Thread.currentThread().getName() + " captured firstObject's monitor");
+            String threadName = Thread.currentThread().getName();
+            System.out.println(threadName + " captured " + firstObject + "'s monitor");
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             System.out.println("Trying to capture secondObject's monitor");
-
             synchronized (firstObject) {
-                System.out.println(Thread.currentThread().getName() + " captured secondObject's monitor");
+                System.out.println(threadName + " captured " + secondObject + "'s monitor");
             }
         }
     }
