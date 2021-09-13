@@ -68,18 +68,16 @@ public class DataStreamSerializer implements StreamSerializer {
         writeWithException(sectionData, dataOutputStream, organization -> {
             Link link = organization.getLink();
             dataOutputStream.writeUTF(link.getName());
-            if (link.getUrl() == null) {
-                dataOutputStream.writeUTF("");
-            } else {
-                dataOutputStream.writeUTF(link.getUrl());
-            }
+            String url = link.getUrl();
+            dataOutputStream.writeUTF(url == null ? "" : url);
 
             List<Organization.Position> positions = organization.getPositions();
             writeWithException(positions, dataOutputStream, position -> {
+                String description = position.getDescription();
                 dataOutputStream.writeUTF(position.getStartDate().toString());
                 dataOutputStream.writeUTF(position.getEndDate().toString());
                 dataOutputStream.writeUTF(position.getTitle());
-                dataOutputStream.writeUTF(position.getDescription() == null ? "" : position.getDescription());
+                dataOutputStream.writeUTF(description == null ? "" : description);
             });
         });
     }
@@ -101,8 +99,8 @@ public class DataStreamSerializer implements StreamSerializer {
                 SectionType type = SectionType.valueOf(dataInputStream.readUTF());
                 switch (type) {
                     case OBJECTIVE, PERSONAL -> allSections.put(type, new TextSection(dataInputStream.readUTF()));
-                    case QUALIFICATIONS, ACHIEVEMENTS -> readListSection(dataInputStream, type, resume);
-                    case EXPERIENCE, EDUCATION -> readOrganisationSection(dataInputStream, type, resume);
+                    case QUALIFICATIONS, ACHIEVEMENTS -> readListSection(dataInputStream, type, allSections);
+                    case EXPERIENCE, EDUCATION -> readOrganisationSection(dataInputStream, type, allSections);
                 }
             });
             return resume;
@@ -117,7 +115,7 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void readOrganisationSection(DataInputStream dataInputStream, SectionType sectionType, Resume resume) throws IOException {
+    private void readOrganisationSection(DataInputStream dataInputStream, SectionType sectionType, Map<SectionType, Section> allSections) throws IOException {
         List<Organization> organizationList = new ArrayList<>();
 
         readWithException(dataInputStream, () -> {
@@ -138,12 +136,11 @@ public class DataStreamSerializer implements StreamSerializer {
             });
             organizationList.add(new Organization(link, positionList));
         });
-        resume.getAllSections().put(sectionType, new OrganizationSection(organizationList));
+        allSections.put(sectionType, new OrganizationSection(organizationList));
     }
 
-    private void readListSection(DataInputStream dataInputStream, SectionType sectionType, Resume resume) throws IOException {
+    private void readListSection(DataInputStream dataInputStream, SectionType sectionType, Map<SectionType, Section> allSections) throws IOException {
         List<String> list = new ArrayList<>();
-        Map<SectionType, Section> allSections = resume.getAllSections();
 
         readWithException(dataInputStream, ()-> {
             String e = dataInputStream.readUTF();
