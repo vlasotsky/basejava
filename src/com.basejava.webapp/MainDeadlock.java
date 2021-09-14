@@ -1,5 +1,7 @@
 package com.basejava.webapp;
 
+import java.util.Objects;
+
 public class MainDeadlock {
     public static void main(String[] args) {
         Object firstObject = new Object();
@@ -10,7 +12,7 @@ public class MainDeadlock {
     }
 
     private static void objectLocking(Object firstObject, Object secondObject) {
-        synchronized (secondObject) {
+        synchronized (firstObject) {
             String threadName = Thread.currentThread().getName();
             System.out.println(threadName + " captured " + firstObject + "'s monitor");
 
@@ -20,8 +22,8 @@ public class MainDeadlock {
                 e.printStackTrace();
             }
 
-            System.out.println("Trying to capture secondObject's monitor");
-            synchronized (firstObject) {
+            System.out.println(threadName + " is waiting to capture secondObject's monitor");
+            synchronized (secondObject) {
                 System.out.println(threadName + " captured " + secondObject + "'s monitor");
             }
         }
