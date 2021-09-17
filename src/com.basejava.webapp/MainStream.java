@@ -11,8 +11,6 @@ public class MainStream {
 
         System.out.println(minValue(new int[]{9, 8}));
 
-        System.out.println(oddOrEven(new ArrayList<>(Arrays.asList(1, 2, -3, 4, 5))));
-
         System.out.println(oddOrEven(new ArrayList<>(Arrays.asList(1, 2, -3, -4))));
 
         System.out.println(oddOrEven(new ArrayList<>(Arrays.asList(8, 9))));
@@ -31,7 +29,7 @@ public class MainStream {
                 .mapToInt(p -> p)
                 .sum();
         return integers.stream()
-                .filter((element) -> (sum % 2 == 0 ? element % 2 != 0 : element % 2 == 0))
+                .filter((element) -> ((sum + element) % 2 != 0))
                 .collect(Collectors.toList());
     }
 }
