@@ -1,5 +1,7 @@
 package com.basejava.webapp;
 
+import com.basejava.webapp.storage.SqlStorage;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,9 +26,6 @@ public class Config {
         try (InputStream is = new FileInputStream(PROPS)) {
             props.load(is);
             storageDir = new File(props.getProperty("storage.dir"));
-//            dbUrl = new File(props.getProperty("db.url"));
-//            dbUser = new File(props.getProperty("db.user"));
-//            dbPassword = new File(props.getProperty("db.password"));
             dbUrl = props.getProperty("db.url");
             dbUser = props.getProperty("db.user");
             dbPassword = props.getProperty("db.password");
@@ -39,15 +38,7 @@ public class Config {
         return storageDir;
     }
 
-    public String getDbUrl() {
-        return dbUrl;
-    }
-
-    public String getDbUser() {
-        return dbUser;
-    }
-
-    public String getDbPassword() {
-        return dbPassword;
+    public static SqlStorage getSqlStorage() {
+        return new SqlStorage(INSTANCE.dbUrl, INSTANCE.dbUser, INSTANCE.dbPassword);
     }
 }
