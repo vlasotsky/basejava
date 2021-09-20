@@ -14,8 +14,6 @@ public abstract class AbstractStorage<SK> implements Storage {
     public static final Comparator<Resume> STORAGE_COMPARATOR =
             Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
 
-
-
     protected abstract SK findSearchKey(String uuid);
 
     protected abstract void doSave(SK searchIndex, Resume resume);
