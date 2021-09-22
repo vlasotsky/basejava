@@ -1,6 +1,7 @@
 package com.basejava.webapp.storage;
 
 import com.basejava.webapp.Config;
+import com.basejava.webapp.ResumeTestData;
 import com.basejava.webapp.exception.ExistingStorageException;
 import com.basejava.webapp.exception.NotExistingStorageException;
 import com.basejava.webapp.model.Resume;
@@ -31,16 +32,16 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_TEST;
 
     static {
-        RESUME_1 = new Resume(UUID_1, "Mary");
-        RESUME_2 = new Resume(UUID_2, "David");
-        RESUME_3 = new Resume(UUID_3, "Zoe");
-        RESUME_DUMMY = new Resume(UUID_DUMMY, "dummy");
-        RESUME_TEST = new Resume(UUID_TEST, "Gabriel");
-//        RESUME_1 = ResumeTestData.makeTestResume(UUID_1, "Mary");
-//        RESUME_2 = ResumeTestData.makeTestResume(UUID_2, "David");
-//        RESUME_3 = ResumeTestData.makeTestResume(UUID_3, "Zoe");
-//        RESUME_DUMMY = ResumeTestData.makeTestResume(UUID_DUMMY, "dummy");
-//        RESUME_TEST = ResumeTestData.makeTestResume(UUID_TEST, "Gabriel");
+//        RESUME_1 = new Resume(UUID_1, "Mary");
+//        RESUME_2 = new Resume(UUID_2, "David");
+//        RESUME_3 = new Resume(UUID_3, "Zoe");
+//        RESUME_DUMMY = new Resume(UUID_DUMMY, "dummy");
+//        RESUME_TEST = new Resume(UUID_TEST, "Gabriel");
+        RESUME_1 = ResumeTestData.makeTestResume(UUID_1, "Mary");
+        RESUME_2 = ResumeTestData.makeTestResume(UUID_2, "David");
+        RESUME_3 = ResumeTestData.makeTestResume(UUID_3, "Zoe");
+        RESUME_DUMMY = ResumeTestData.makeTestResume(UUID_DUMMY, "dummy");
+        RESUME_TEST = ResumeTestData.makeTestResume(UUID_TEST, "Gabriel");
     }
 
     public AbstractStorageTest(Storage storage) {
