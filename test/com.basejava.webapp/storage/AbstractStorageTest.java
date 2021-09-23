@@ -4,6 +4,7 @@ import com.basejava.webapp.Config;
 import com.basejava.webapp.ResumeTestData;
 import com.basejava.webapp.exception.ExistingStorageException;
 import com.basejava.webapp.exception.NotExistingStorageException;
+import com.basejava.webapp.model.ContactType;
 import com.basejava.webapp.model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
@@ -70,6 +71,8 @@ public abstract class AbstractStorageTest {
     @Test
     public void update() {
         Resume resumeToTest = RESUME_1;
+        resumeToTest.addContact(ContactType.EMAIL_ADDRESS, "gmail.com");
+        resumeToTest.getAllContacts().remove(ContactType.PERSONAL_WEBPAGE);
         storage.update(resumeToTest);
         Assert.assertEquals(resumeToTest, storage.get(UUID_1));
         Assert.assertEquals(3, storage.size());

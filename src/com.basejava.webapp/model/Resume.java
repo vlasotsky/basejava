@@ -34,7 +34,7 @@ public class Resume implements Serializable {
         Objects.requireNonNull(uuid, "uuid must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
-        initializeSections();
+//        initializeSections();
     }
 
     public Map<ContactType, String> getAllContacts() {
