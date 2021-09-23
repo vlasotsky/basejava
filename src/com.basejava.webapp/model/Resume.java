@@ -34,7 +34,6 @@ public class Resume implements Serializable {
         Objects.requireNonNull(uuid, "uuid must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
-//        initializeSections();
     }
 
     public Map<ContactType, String> getAllContacts() {
@@ -51,12 +50,6 @@ public class Resume implements Serializable {
 
     public String getFullName() {
         return fullName;
-    }
-
-    private void initializeSections() {
-        for (SectionType element : SectionType.values()) {
-            this.getAllSections().put(element, null);
-        }
     }
 
     public void addContact(ContactType type, String value) {
