@@ -225,6 +225,7 @@ public class SqlStorage implements Storage {
         });
     }
 
+
     private void addContactAndSection(ResultSet rs, Resume resume) throws SQLException {
         String valueContact = rs.getString("value_contact");
         if (valueContact != null) {
@@ -240,12 +241,6 @@ public class SqlStorage implements Storage {
                 case QUALIFICATIONS, ACHIEVEMENTS -> resume.getAllSections().put(sectionType, new ListSection(valueSection.split("\n")));
             }
         }
-    }
-
-//    method to execute material from above
-
-    private interface StatementExecutor {
-        void execute();
     }
 }
 
