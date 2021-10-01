@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 
-// new changes in SQl
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
 
