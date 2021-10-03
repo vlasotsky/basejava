@@ -31,7 +31,7 @@ public class SqlStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         return sqlHelper.execute("" +
-                        "SELECT r.uuid, r.full_name, c.type_contact, c.value_contact, s.type_section, s.value_section " +
+                        "SELECT r.uuid, r.full_name, c.type, c.value, s.type, s.value " +
                         "FROM resume r " +
                         "LEFT JOIN contact c " +
                         "ON r.uuid = c.resume_uuid " +
