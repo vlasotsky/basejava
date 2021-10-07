@@ -164,10 +164,8 @@ public class SqlStorage implements Storage {
     private void insertContactsAndSections(Resume resume, Connection connection) throws SQLException {
         try (PreparedStatement toInsertContacts = connection.prepareStatement("" +
                 "INSERT INTO contact(value, resume_uuid, type) " +
-                "VALUES(?, ?, ?)");
-             PreparedStatement toInsertSections = connection.prepareStatement("" +
-                     "INSERT INTO section(resume_uuid, type, value) " +
-                     "VALUES (?, ?, ?)")) {
+                "VALUES(?, ?, ?)")
+        ) {
             for (Map.Entry<ContactType, String> element : resume.getAllContacts().entrySet()) {
                 toInsertContacts.setString(1, element.getValue());
                 toInsertContacts.setString(2, resume.getUuid());
@@ -175,32 +173,20 @@ public class SqlStorage implements Storage {
                 toInsertContacts.addBatch();
             }
             toInsertContacts.executeBatch();
-
+        }
+        try (PreparedStatement toInsertSections = connection.prepareStatement("" +
+                "INSERT INTO section(resume_uuid, type, value) " +
+                "VALUES (?, ?, ?)")) {
             for (Map.Entry<SectionType, Section> entry : resume.getAllSections().entrySet()) {
                 switch (entry.getKey()) {
-                    case OBJECTIVE, PERSONAL -> {
-                        toInsertSections.setString(1, resume.getUuid());
-                        toInsertSections.setString(2, entry.getKey().name());
-                        //
+                    case OBJECTIVE, PERSONAL -> executeSection(toInsertSections, resume.getUuid(), entry.getKey().name(), entry.getValue(), ps -> {
                         TextSection textSection = (TextSection) entry.getValue();
-                        String textSectionDescription = textSection.getDescription();
-                        //
-                        toInsertSections.setString(3, textSectionDescription);
-                        toInsertSections.addBatch();
-                    }
-                    case ACHIEVEMENTS, QUALIFICATIONS -> {
-                        toInsertSections.setString(1, resume.getUuid());
-                        toInsertSections.setString(2, entry.getKey().name());
-                        //
+                        return textSection.getDescription();
+                    });
+                    case ACHIEVEMENTS, QUALIFICATIONS -> executeSection(toInsertSections, resume.getUuid(), entry.getKey().name(), entry.getValue(), executeListSection -> {
                         ListSection listSection = (ListSection) entry.getValue();
-                        StringBuilder stringBuilder = new StringBuilder();
-                        for (String element : listSection.getData()) {
-                            stringBuilder.append(element).append('\n');
-                        }
-                        //
-                        toInsertSections.setString(3, stringBuilder.toString());
-                        toInsertSections.addBatch();
-                    }
+                        return String.join("\n", listSection.getData());
+                    });
                 }
             }
             toInsertSections.executeBatch();
@@ -240,6 +226,17 @@ public class SqlStorage implements Storage {
                 case QUALIFICATIONS, ACHIEVEMENTS -> resume.getAllSections().put(sectionType, new ListSection(valueSection.split("\n")));
             }
         }
+    }
+
+    private void executeSection(PreparedStatement preparedStatement, String uuid, String keyName, Section section, SectionExecutor executor) throws SQLException {
+        preparedStatement.setString(1, uuid);
+        preparedStatement.setString(2, keyName);
+        preparedStatement.setString(3, executor.executeSection(section));
+        preparedStatement.addBatch();
+    }
+
+    private interface SectionExecutor {
+        String executeSection(Section section);
     }
 }
 
