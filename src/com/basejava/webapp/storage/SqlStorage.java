@@ -1,12 +1,7 @@
 package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.NotExistingStorageException;
-import com.basejava.webapp.model.ContactType;
-import com.basejava.webapp.model.ListSection;
-import com.basejava.webapp.model.Resume;
-import com.basejava.webapp.model.Section;
-import com.basejava.webapp.model.SectionType;
-import com.basejava.webapp.model.TextSection;
+import com.basejava.webapp.model.*;
 import com.basejava.webapp.sql.SqlHelper;
 
 import java.sql.*;
@@ -21,6 +16,11 @@ public class SqlStorage implements Storage {
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
         sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -31,7 +31,7 @@ public class SqlStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         return sqlHelper.execute("" +
-                        "SELECT r.uuid, r.full_name, c.type, c.value, s.type, s.value " +
+                        "SELECT r.uuid, r.full_name, c.type AS type_contact, c.value AS value_contact, s.type AS type_section, s.value AS value_section " +
                         "FROM resume r " +
                         "LEFT JOIN contact c " +
                         "ON r.uuid = c.resume_uuid " +
@@ -114,7 +114,7 @@ public class SqlStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
         return sqlHelper.execute("" +
-                        "SELECT r.uuid, r.full_name, c.type_contact , c.value_contact, s.type_section, s.value_section " +
+                        "SELECT r.uuid, r.full_name, c.type AS type_contact, c.value AS value_contact, s.type AS type_section, s.value AS value_section " +
                         "FROM resume r " +
                         "LEFT JOIN contact c ON (r.uuid = c.resume_uuid) " +
                         "LEFT JOIN section s ON (r.uuid = s.resume_uuid) " +
@@ -163,10 +163,10 @@ public class SqlStorage implements Storage {
 
     private void insertContactsAndSections(Resume resume, Connection connection) throws SQLException {
         try (PreparedStatement toInsertContacts = connection.prepareStatement("" +
-                "INSERT INTO contact(value_contact, resume_uuid, type_contact) " +
+                "INSERT INTO contact(value, resume_uuid, type) " +
                 "VALUES(?, ?, ?)");
              PreparedStatement toInsertSections = connection.prepareStatement("" +
-                     "INSERT INTO section(resume_uuid, type_section, value_section) " +
+                     "INSERT INTO section(resume_uuid, type, value) " +
                      "VALUES (?, ?, ?)")) {
             for (Map.Entry<ContactType, String> element : resume.getAllContacts().entrySet()) {
                 toInsertContacts.setString(1, element.getValue());

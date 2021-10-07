@@ -18,7 +18,7 @@ public class FileStorage extends AbstractStorage<File> {
 
         this.streamSerializer = streamSerializer;
         if (!directory.isDirectory()) {
-            throw new IllegalArgumentException(directory.getAbsolutePath() + "is not a directory");
+            throw new IllegalArgumentException(directory.getAbsolutePath() + " is not a directory");
         }
         if (!directory.canRead() || !directory.canWrite()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + "is not readable/writable");
