@@ -23,14 +23,14 @@ public class DataStreamSerializer implements StreamSerializer {
         try (DataOutputStream dataOutputStream = new DataOutputStream(outputStream)) {
             dataOutputStream.writeUTF(resume.getUuid());
             dataOutputStream.writeUTF(resume.getFullName());
-            Map<ContactType, String> allContacts = resume.getAllContacts();
+            Map<ContactType, String> allContacts = resume.getContacts();
 
             writeWithException(allContacts.entrySet(), dataOutputStream, o -> {
                 dataOutputStream.writeUTF(o.getKey().name());
                 dataOutputStream.writeUTF(o.getValue());
             });
 
-            Map<SectionType, Section> allSections = resume.getAllSections();
+            Map<SectionType, Section> allSections = resume.getSections();
 
             Set<Map.Entry<SectionType, Section>> collection = allSections.entrySet();
             writeWithException(collection, dataOutputStream, element -> {
@@ -55,7 +55,7 @@ public class DataStreamSerializer implements StreamSerializer {
     }
 
     private void writeTextSection(DataOutputStream dataOutputStream, TextSection section) throws IOException {
-        dataOutputStream.writeUTF(section.getDescription());
+        dataOutputStream.writeUTF(section.getData());
     }
 
     private void writeListSection(DataOutputStream dataOutputStream, ListSection section) throws IOException {
@@ -89,11 +89,11 @@ public class DataStreamSerializer implements StreamSerializer {
             String fullName = dataInputStream.readUTF();
             Resume resume = new Resume(uuid, fullName);
 
-            Map<ContactType, String> allContacts = resume.getAllContacts();
+            Map<ContactType, String> allContacts = resume.getContacts();
 
             readWithException(dataInputStream, () -> allContacts.put(ContactType.valueOf(dataInputStream.readUTF()), dataInputStream.readUTF()));
 
-            Map<SectionType, Section> allSections = resume.getAllSections();
+            Map<SectionType, Section> allSections = resume.getSections();
 
             readWithException(dataInputStream, () -> {
                 SectionType type = SectionType.valueOf(dataInputStream.readUTF());

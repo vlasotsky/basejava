@@ -11,28 +11,28 @@ public class TextSection extends Section {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private String description;
+    private String data;
 
     public TextSection() {
     }
 
     public TextSection(String description) {
         Objects.requireNonNull(description, "Description must not be null");
-        this.description = description;
+        this.data = description;
     }
 
-    public String getDescription() {
-        return description;
+    public String getData() {
+        return data;
     }
 
     @Override
     public String toString() {
-        return '*' + description + '\n';
+        return '*' + data + '\n';
     }
 
     private void replaceData(String toBeReplaced) {
-        StringBuilder sb = new StringBuilder(description);
-        description = Pattern.compile(toBeReplaced).matcher(sb).replaceAll("");
+        StringBuilder sb = new StringBuilder(data);
+        data = Pattern.compile(toBeReplaced).matcher(sb).replaceAll("");
     }
 
     @Override
@@ -40,11 +40,11 @@ public class TextSection extends Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TextSection that = (TextSection) o;
-        return Objects.equals(description, that.description);
+        return Objects.equals(data, that.data);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(description);
+        return Objects.hash(data);
     }
 }

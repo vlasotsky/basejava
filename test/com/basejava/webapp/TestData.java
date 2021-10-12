@@ -1,19 +1,46 @@
 package com.basejava.webapp;
 
+import com.basejava.webapp.ResumeTestData;
 import com.basejava.webapp.model.*;
 
-public class ResumeTestData {
+import java.util.UUID;
 
-    public static Resume makeTestResume(String uuid, String fullName) {
+public class TestData {
+    public static final String UUID_1 = UUID.randomUUID().toString();
+    public static final String UUID_2 = UUID.randomUUID().toString();
+    public static final String UUID_3 = UUID.randomUUID().toString();
+    public static final String UUID_DUMMY = UUID.randomUUID().toString();
+    public static final String UUID_TEST = UUID.randomUUID().toString();
+
+    public static final Resume RESUME_1;
+    public static final Resume RESUME_2;
+    public static final Resume RESUME_3;
+    public static final Resume RESUME_DUMMY;
+    public static final Resume RESUME_TEST;
+
+    static {
+//        RESUME_1 = new Resume(UUID_1, "Mary");
+//        RESUME_2 = new Resume(UUID_2, "David");
+//        RESUME_3 = new Resume(UUID_3, "Zoe");
+//        RESUME_DUMMY = new Resume(UUID_DUMMY, "dummy");
+//        RESUME_TEST = new Resume(UUID_TEST, "Gabriel");
+        RESUME_1 = makeTestResume(UUID_1, "Mary");
+        RESUME_2 = makeTestResume(UUID_2, "David");
+        RESUME_3 = makeTestResume(UUID_3, "Zoe");
+        RESUME_DUMMY = makeTestResume(UUID_DUMMY, "dummy");
+        RESUME_TEST = makeTestResume(UUID_TEST, "Gabriel");
+    }
+
+    private static Resume makeTestResume(String uuid, String fullName) {
         Resume resume = new Resume(uuid, fullName);
 
-        resume.addContact(ContactType.PHONE_NUMBER, "+7(921) 855-0482");
-        resume.addContact(ContactType.MESSENGER_ACCOUNT, "Skype: employee123");
-        resume.addContact(ContactType.EMAIL_ADDRESS, "employee@gmail.com");
-        resume.addContact(ContactType.LINKEDIN_ACCOUNT, "https://www.linkedin.com/in/emloyee");
-        resume.addContact(ContactType.GITHUB_ACCOUNT, "https://github.com/employee");
-        resume.addContact(ContactType.STACKOVERFLOW_ACCOUNT, "https://stackoverflow.com/users/111111");
-        resume.addContact(ContactType.PERSONAL_WEBPAGE, "http://employee.com/");
+        resume.addContact(ContactType.PHONE_NUMBER, "Тел.: +7(921) 855-0482");
+        resume.addContact(ContactType.MESSENGER_ACCOUNT, "Skype: grigory.kislin");
+        resume.addContact(ContactType.EMAIL_ADDRESS, "Почта: gkislin@yandex.ru");
+        resume.addContact(ContactType.LINKEDIN_ACCOUNT, "https://www.linkedin.com/in/gkislin");
+        resume.addContact(ContactType.GITHUB_ACCOUNT, "https://github.com/gkislin");
+        resume.addContact(ContactType.STACKOVERFLOW_ACCOUNT, "https://stackoverflow.com/users/548473");
+        resume.addContact(ContactType.PERSONAL_WEBPAGE, "http://gkislin.ru/");
 
         resume.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
         resume.addSection(SectionType.QUALIFICATIONS, new ListSection(
