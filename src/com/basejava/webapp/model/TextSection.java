@@ -27,7 +27,8 @@ public class TextSection extends Section {
 
     @Override
     public String toString() {
-        return '*' + data + '\n';
+//        return '*' + data + '\n';
+        return data + '\n';
     }
 
     private void replaceData(String toBeReplaced) {

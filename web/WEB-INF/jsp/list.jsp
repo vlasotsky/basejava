@@ -3,6 +3,7 @@
 <%@ page import="com.basejava.webapp.model.ContactType" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.util.UUID" %>
 
 <html>
 <head>
@@ -19,6 +20,9 @@
             <th>Email</th>
             <th></th>
             <th></th>
+        </tr>
+        <tr>
+            <a href="resume?uuid=${UUID.randomUUID()}&action=add"><img src="img/add.png" width=50 height=40></a>
         </tr>
         <c:forEach items="${resumes}" var="resume">
             <jsp:useBean id="resume" type="com.basejava.webapp.model.Resume"/>

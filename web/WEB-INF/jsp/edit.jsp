@@ -31,30 +31,10 @@
         </c:forEach>
         <h3>Sections:</h3>
         <p>
-            <c:forEach var="sectionEntry" items="<%=resume.getSections()%>">
-                <jsp:useBean id="sectionEntry"
-                             type="java.util.Map.Entry<com.basejava.webapp.model.SectionType, com.basejava.webapp.model.Section>"/>
+            <c:forEach var="sectionType" items="<%=SectionType.values()%>">
         <dl>
-            <dt>${sectionEntry.key.name()}</dt>
-            <%
-                if (sectionEntry.getKey().name().equals("PERSONAL") || sectionEntry.getKey().name().equals("OBJECTIVE")) {
-
-            %>
-            <dd><input type="text" name="${sectionEntry.key.name()}" size=150 value="${sectionEntry.value}"></dd>
-            <%
-            } else if (sectionEntry.getKey().name().equals("ACHIEVEMENTS") || sectionEntry.getKey().name().equals("QUALIFICATIONS")) {
-                int size = ((ListSection) sectionEntry.getValue()).getData().size();
-            %>
-            <%
-                List<String> list = ((ListSection) sectionEntry.getValue()).getData();
-            %>
-            <textarea cols=100 rows=<%=size * 3%>><c:forEach var="element"
-                                                             items="<%=list%>">&#10;${element}></c:forEach></textarea>
-            <%
-                } else {
-                    out.print(sectionEntry.getValue());
-                }
-            %>
+            <dt>${sectionType.title}</dt>
+            <textarea name="${sectionType.name()}" cols=100 rows=10><c:out value="${resume.getSection(sectionType)}"/></textarea>
         </dl>
         </c:forEach>
         <hr>

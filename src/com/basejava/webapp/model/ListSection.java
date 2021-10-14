@@ -36,7 +36,8 @@ public class ListSection extends Section {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (String element : data) {
-            sb.append('*').append(element).append('\n');
+//            sb.append('*').append(element).append('\n');
+            sb.append(element).append('\n');
         }
         return sb.toString();
     }
