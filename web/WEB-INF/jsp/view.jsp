@@ -1,7 +1,5 @@
-<%@ page import="com.basejava.webapp.model.ListSection" %>
-<%@ page import="com.basejava.webapp.model.SectionType" %>
-<%@ page import="com.basejava.webapp.model.Section" %>
-<%@ page import="com.basejava.webapp.model.TextSection" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.basejava.webapp.model.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -28,28 +26,40 @@
         <c:forEach var="sectionEntry" items="${resume.sections}">
             <jsp:useBean id="sectionEntry"
                          type="java.util.Map.Entry<com.basejava.webapp.model.SectionType, com.basejava.webapp.model.Section>"/>
-            <%=sectionEntry.getKey()%><a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/pencil.png"
-                                                                                            height=20 width=20></a>
+            <%=sectionEntry.getKey()%>
             <br/>
-            <%
-                switch (sectionEntry.getKey()) {
-                    case OBJECTIVE:
-                    case PERSONAL:
-                        TextSection textSection = (TextSection) sectionEntry.getValue();
-                        out.println(textSection.getData() + "<br>");
-                        break;
-                    case QUALIFICATIONS:
-                    case ACHIEVEMENTS:
-                        ListSection listSection = (ListSection) sectionEntry.getValue();
-                        for (String element : listSection.getData()) {
-                            out.println(element + "<br>");
-                        }
-                        break;
-                    case EDUCATION:
-                    case EXPERIENCE:
-                        break;
-                }
-            %>
+            <c:if test="${sectionEntry.key == SectionType.PERSONAL || sectionEntry.key == SectionType.OBJECTIVE}">
+                <c:out value="${sectionEntry.value}"/><br/>
+            </c:if>
+            <c:if test="${sectionEntry.key == SectionType.ACHIEVEMENTS || sectionEntry.key == SectionType.QUALIFICATIONS}">
+                <%
+                    ListSection entryValue = (ListSection) sectionEntry.getValue();
+                    pageContext.setAttribute("entryValue", entryValue);
+                %>
+                <c:forEach var="element" items="${entryValue.data}">
+                    <c:out value="${element}"/><br/>
+                </c:forEach>
+            </c:if>
+            <c:if test="${sectionEntry.key == SectionType.EDUCATION || sectionEntry.key == SectionType.EXPERIENCE}">
+                <%
+                    OrganizationSection organizationSection = (OrganizationSection) sectionEntry.getValue();
+                    pageContext.setAttribute("organisationSection", organizationSection);
+                %>
+                <c:forEach var="organisation" items="${organisationSection.data}">
+                    <c:out value="${organisation.link.name}"/><br/>
+                    <c:if test="${organisation.link.url != null}">
+                        <c:out value="${organisation.link.url}"/><br/>
+                    </c:if>
+                    <c:forEach var="position" items="${organisation.positions}">
+                        <c:out value="${position.title}"/><br/>
+                        <c:if test="${position.description != null}">
+                            <c:out value="${position.description}"/><br/>
+                        </c:if>
+                        <c:out value="FROM: ${position.startDate} TO: ${position.endDate}"/><br/>
+                        <br/>
+                    </c:forEach>
+                </c:forEach>
+            </c:if>
         </c:forEach>
     </p>
 </section>

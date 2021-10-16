@@ -82,7 +82,7 @@ public class ResumeServlet extends HttpServlet {
                     break;
                 case ACHIEVEMENTS, QUALIFICATIONS:
                     if (value != null && value.trim().length() != 0) {
-                        resume.addSection(sectionType, new ListSection(value));
+                        resume.addSection(sectionType, new ListSection(value.split("\n")));
                     } else {
                         resume.getSections().remove(sectionType);
                     }
