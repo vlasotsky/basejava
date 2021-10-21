@@ -47,15 +47,16 @@
                 %>
                 <c:forEach var="organisation" items="${organisationSection.data}">
                     <c:out value="${organisation.link.name}"/><br/>
-                    <c:if test="${organisation.link.url != null}">
-                        <c:out value="${organisation.link.url}"/><br/>
-                    </c:if>
+
                     <c:forEach var="position" items="${organisation.positions}">
+                        <c:out value="From: ${position.startDate} Until: ${position.endDate}"/><br/>
+                        <c:if test="${organisation.link.url != null}">
+                            <c:out value="${organisation.link.url}"/><br/>
+                        </c:if>
                         <c:out value="${position.title}"/><br/>
                         <c:if test="${position.description != null}">
                             <c:out value="${position.description}"/><br/>
                         </c:if>
-                        <c:out value="FROM: ${position.startDate} TO: ${position.endDate}"/><br/>
                         <br/>
                     </c:forEach>
                 </c:forEach>

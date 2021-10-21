@@ -13,9 +13,17 @@
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
+<%
+    response.setHeader("Cache-Control", "no-cache"); // HTTP 1.1.
+    response.setHeader("Cache-Control", "no-store");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expire", 0);
+%>
 
 <section>
     <form method="post" action="resume" enctype="application/x-www-form-urlencoded">
+
+
         <input type="hidden" name="uuid" value="${resume.uuid}">
         <dl>
             <dt>Name:</dt>
@@ -34,7 +42,8 @@
             <c:forEach var="sectionType" items="<%=SectionType.values()%>">
         <dl>
             <dt>${sectionType.title}</dt>
-            <textarea name="${sectionType.name()}" cols=100 rows=10><c:out value="${resume.getSection(sectionType)}"/></textarea>
+            <textarea name="${sectionType.name()}" cols=100 rows=10><c:out
+                    value="${resume.getSection(sectionType)}"/></textarea>
         </dl>
         </c:forEach>
         <hr>

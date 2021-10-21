@@ -1,6 +1,7 @@
 package com.basejava.webapp.web;
 
 import com.basejava.webapp.Config;
+import com.basejava.webapp.exception.NotExistingStorageException;
 import com.basejava.webapp.model.*;
 import com.basejava.webapp.storage.Storage;
 
@@ -10,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.*;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -23,7 +24,11 @@ public class ResumeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+        response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+        response.setDateHeader("Expires", 0);
         request.setCharacterEncoding("UTF-8");
+
         String uuid = request.getParameter("uuid");
         String action = request.getParameter("action");
         if (action == null) {
@@ -39,7 +44,6 @@ public class ResumeServlet extends HttpServlet {
                 return;
             case "add":
                 resume = new Resume(UUID.randomUUID().toString(), "");
-                storage.save(resume);
                 break;
             case "view":
             case "edit":
@@ -60,7 +64,13 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume resume = storage.get(uuid);
+        Resume resume;
+        try {
+            resume = storage.get(uuid);
+        } catch (NotExistingStorageException e) {
+            resume = new Resume(uuid, fullName);
+            storage.save(resume);
+        }
         resume.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
@@ -82,11 +92,16 @@ public class ResumeServlet extends HttpServlet {
                     break;
                 case ACHIEVEMENTS, QUALIFICATIONS:
                     if (value != null && value.trim().length() != 0) {
-                        resume.addSection(sectionType, new ListSection(value.split("\n")));
+                        List<String> list = new ArrayList<>(Arrays.asList(value.split("\n")));
+                        list.removeIf(item -> item == null || item.equals("\r"));
+                        resume.addSection(sectionType, new ListSection(list));
                     } else {
                         resume.getSections().remove(sectionType);
                     }
             }
+        }
+        if (resume.getFullName() == null || resume.getFullName().trim().equals("")) {
+            storage.delete(resume.getUuid());
         }
         storage.update(resume);
         response.sendRedirect("resume");
