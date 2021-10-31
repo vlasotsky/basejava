@@ -1,5 +1,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.basejava.webapp.model.*" %>
+<%@ page import="com.basejava.webapp.util.HtmlUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -19,50 +20,86 @@
         <c:forEach var="contactEntry" items="${resume.contacts}">
             <jsp:useBean id="contactEntry"
                          type="java.util.Map.Entry<com.basejava.webapp.model.ContactType, java.lang.String>"/>
-            <%=contactEntry.getKey().toHtml(contactEntry.getValue())%><br/>
+                <%=contactEntry.getKey().toHtml(contactEntry.getValue())%><br/>
         </c:forEach>
-    </p>
     <p>
+    <hr>
+
+    <table>
         <c:forEach var="sectionEntry" items="${resume.sections}">
             <jsp:useBean id="sectionEntry"
                          type="java.util.Map.Entry<com.basejava.webapp.model.SectionType, com.basejava.webapp.model.Section>"/>
-            <%=sectionEntry.getKey()%>
-            <br/>
-            <c:if test="${sectionEntry.key == SectionType.PERSONAL || sectionEntry.key == SectionType.OBJECTIVE}">
-                <c:out value="${sectionEntry.value}"/><br/>
-            </c:if>
-            <c:if test="${sectionEntry.key == SectionType.ACHIEVEMENTS || sectionEntry.key == SectionType.QUALIFICATIONS}">
-                <%
-                    ListSection entryValue = (ListSection) sectionEntry.getValue();
-                    pageContext.setAttribute("entryValue", entryValue);
-                %>
-                <c:forEach var="element" items="${entryValue.data}">
-                    <c:out value="${element}"/><br/>
-                </c:forEach>
-            </c:if>
-            <c:if test="${sectionEntry.key == SectionType.EDUCATION || sectionEntry.key == SectionType.EXPERIENCE}">
-                <%
-                    OrganizationSection organizationSection = (OrganizationSection) sectionEntry.getValue();
-                    pageContext.setAttribute("organisationSection", organizationSection);
-                %>
-                <c:forEach var="organisation" items="${organisationSection.data}">
-                    <c:out value="${organisation.link.name}"/><br/>
+            <c:set var="type" value="${sectionEntry.key}"/>
+            <c:set var="section" value="${sectionEntry.value}"/>
+            <jsp:useBean id="section" type="com.basejava.webapp.model.Section"/>
+            <tr>
+                <c:if test="${type.name() == 'OBJECTIVE'}">
+                    <td><h3><c:out value="${type.title}"/></h3></td>
+                    <td>
+                        <h3><%=((TextSection) section).getData()%>
+                        </h3>
+                    </td>
+                </c:if>
+            </tr>
+            <c:if test="${type.name() != 'OBJECTIVE'}">
+                <c:choose>
+                    <c:when test="${type.name() == 'PERSONAL'}">
+                        <tr>
+                            <td>
+                                <h3>${type.title}</h3>
+                            </td>
+                            <td>
+                                <%=((TextSection) section).getData()%>
+                            </td>
+                        </tr>
+                    </c:when>
+                    <c:when test="${type.name() eq 'ACHIEVEMENTS' or type.name() eq 'QUALIFICATIONS'}">
+                        <h3>${type.title}</h3>
+                        <ul>
+                            <c:forEach var="element" items="<%=((ListSection) section).getData()%>">
+                                <li>${element}</li>
+                            </c:forEach>
+                        </ul>
+                    </c:when>
+                    <c:when test="${type.name() eq 'EXPERIENCE' or type.name() eq 'EDUCATION'}">
+                        <tr>
+                            <td><h3>${type.title}</h3></td>
+                        </tr>
+                        <c:forEach var="organisation" items="<%=((OrganizationSection) section).getData()%>">
+                            <jsp:useBean id="organisation" type="com.basejava.webapp.model.Organization"/>
+                            <tr>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${empty organisation.link.url}">
+                                            <h3>${organisation.link.name}</h3>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <h3><a href="${organisation.link.url}">${organisation.link.name}</a></h3>
+                                        </c:otherwise>
 
-                    <c:forEach var="position" items="${organisation.positions}">
-                        <c:out value="From: ${position.startDate} Until: ${position.endDate}"/><br/>
-                        <c:if test="${organisation.link.url != null}">
-                            <c:out value="${organisation.link.url}"/><br/>
-                        </c:if>
-                        <c:out value="${position.title}"/><br/>
-                        <c:if test="${position.description != null}">
-                            <c:out value="${position.description}"/><br/>
-                        </c:if>
-                        <br/>
-                    </c:forEach>
-                </c:forEach>
+                                    </c:choose>
+                                </td>
+                            </tr>
+                            <c:forEach var="position" items="${organisation.positions}">
+                                <jsp:useBean id="position" type="com.basejava.webapp.model.Organization.Position"/>
+                                <tr>
+                                    <td><%=HtmlUtil.formatDates(position.getStartDate()) + " - " + HtmlUtil.formatDates(position.getEndDate())%>
+                                    </td>
+                                    <td><h4>${position.title}</h4>
+                                        <br/>
+                                        <c:if test="${not empty position.description}">
+                                            <c:out value="${position.description}"/>
+                                        </c:if>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:forEach>
+                    </c:when>
+                </c:choose>
             </c:if>
         </c:forEach>
-    </p>
+    </table>
+    <button onclick="window.history.back()">OK</button>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

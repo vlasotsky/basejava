@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 public class TextSection extends Section {
     @Serial
     private static final long serialVersionUID = 1L;
+    public static final Section EMPTY = new TextSection("");
 
     private String data;
 

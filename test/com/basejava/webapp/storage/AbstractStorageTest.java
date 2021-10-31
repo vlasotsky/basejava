@@ -47,7 +47,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void update() {
         Resume resumeToTest = RESUME_1;
-        resumeToTest.addContact(ContactType.EMAIL_ADDRESS, "gmail.com");
+        resumeToTest.setContact(ContactType.EMAIL_ADDRESS, "gmail.com");
         resumeToTest.getContacts().remove(ContactType.PERSONAL_WEBPAGE);
         storage.update(resumeToTest);
         Assert.assertEquals(resumeToTest, storage.get(UUID_1));

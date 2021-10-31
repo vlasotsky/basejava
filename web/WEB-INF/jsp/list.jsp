@@ -14,6 +14,7 @@
 <body>
 <jsp:include page="fragments/header.jsp"/>
 <section>
+    <a href="resume?action=add"><img src="img/add.png" width=70 height=50></a>
     <table border="1" cellpadding="8" cellspacing="0">
         <tr>
             <th>Name</th>
@@ -22,7 +23,7 @@
             <th></th>
         </tr>
         <tr>
-            <a href="resume?uuid=${UUID.randomUUID()}&action=add"><img src="img/add.png" width=50 height=40></a>
+            <%--            <a href="resume?uuid=${UUID.randomUUID()}&action=add"><img src="img/add.png" width=50 height=40></a>--%>
         </tr>
         <c:forEach items="${resumes}" var="resume">
             <jsp:useBean id="resume" type="com.basejava.webapp.model.Resume"/>

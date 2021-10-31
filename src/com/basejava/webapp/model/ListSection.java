@@ -13,6 +13,8 @@ public class ListSection extends Section {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    public static final Section EMPTY = new ListSection("");
+
     private List<String> data = new ArrayList<>();
 
     public ListSection() {

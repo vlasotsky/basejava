@@ -19,6 +19,7 @@ import static java.time.YearMonth.of;
 public class Organization implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+    public static final Organization EMPTY = new Organization("", "", Position.EMPTY);
     private Link link;
     private List<Position> positions = new ArrayList<>();
 
@@ -75,13 +76,14 @@ public class Organization implements Serializable {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Position implements Serializable {
+        public static final Position EMPTY = new Position();
+
         @XmlJavaTypeAdapter(YearMonthAdapter.class)
         private YearMonth startDate;
         @XmlJavaTypeAdapter(YearMonthAdapter.class)
         private YearMonth endDate;
         private String title;
         private String description;
-
         public Position() {
         }
 
@@ -130,7 +132,7 @@ public class Organization implements Serializable {
         }
 
         public String getDescription() {
-            return description;
+            return description == null ? "" : description;
         }
 
         @Override

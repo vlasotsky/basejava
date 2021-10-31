@@ -1,7 +1,7 @@
 package com.basejava.webapp.model;
 
 public enum SectionType {
-    OBJECTIVE("Position in organisation/Current occupation"),
+    OBJECTIVE("Current occupation"),
     PERSONAL("Personal qualities"),
 
     ACHIEVEMENTS("Achievements"),

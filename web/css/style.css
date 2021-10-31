@@ -29,3 +29,24 @@ dd {
     margin-left: 8px;
     vertical-align: top;
 }
+
+h4 {
+    font-family: "Arial Black", monospace;
+    color: darkslateblue;
+    font-size: small;
+    text-align: left;
+    border-radius: 20px;
+}
+
+h3 {
+    margin: 15px 0 0;
+}
+
+ul {
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+td {
+    alignment: top;
+}

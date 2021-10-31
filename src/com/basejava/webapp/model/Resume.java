@@ -16,6 +16,8 @@ public class Resume implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    public static final Resume EMPTY = new Resume();
+
     private String uuid;
     private String fullName;
 
@@ -64,11 +66,11 @@ public class Resume implements Serializable {
         this.fullName = fullName;
     }
 
-    public void addSection(SectionType type, Section section) {
+    public void setSection(SectionType type, Section section) {
         this.getSections().put(type, section);
     }
 
-    public void addContact(ContactType type, String contact) {
+    public void setContact(ContactType type, String contact) {
         this.getContacts().put(type, contact);
     }
 

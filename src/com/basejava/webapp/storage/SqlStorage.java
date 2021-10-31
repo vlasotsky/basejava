@@ -209,14 +209,14 @@ public class SqlStorage implements Storage {
     private void addContactAndSection(ResultSet rs, Resume resume) throws SQLException {
         String valueContact = rs.getString("value_contact");
         if (valueContact != null) {
-            resume.addContact(ContactType.valueOf(rs.getString("type_contact")), valueContact);
+            resume.setContact(ContactType.valueOf(rs.getString("type_contact")), valueContact);
         }
 
         String content = rs.getString("type_section");
         if (content != null) {
             SectionType sectionType = SectionType.valueOf(content);
             String valueSection = rs.getString("value_section");
-            resume.addSection(sectionType, JsonParser.read(valueSection, Section.class));
+            resume.setSection(sectionType, JsonParser.read(valueSection, Section.class));
         }
     }
 }
