@@ -45,7 +45,7 @@
                 <c:choose>
                     <c:when test="${type.name() == 'PERSONAL'}">
                         <tr>
-                            <td>
+                            <td colspan="2">
                                 <h3>${type.title}</h3>
                             </td>
                             <td>
@@ -55,11 +55,15 @@
                     </c:when>
                     <c:when test="${type.name() eq 'ACHIEVEMENTS' or type.name() eq 'QUALIFICATIONS'}">
                         <h3>${type.title}</h3>
-                        <ul>
-                            <c:forEach var="element" items="<%=((ListSection) section).getData()%>">
-                                <li>${element}</li>
-                            </c:forEach>
-                        </ul>
+                        <tr>
+                            <td colspan="2">
+                                <ul>
+                                    <c:forEach var="element" items="<%=((ListSection) section).getData()%>">
+                                        <li>${element}</li>
+                                    </c:forEach>
+                                </ul>
+                            </td>
+                        </tr>
                     </c:when>
                     <c:when test="${type.name() eq 'EXPERIENCE' or type.name() eq 'EDUCATION'}">
                         <tr>
