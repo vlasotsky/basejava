@@ -9,7 +9,12 @@ import java.util.Properties;
 
 public class Config {
     //    private static final File PROPS = new File(getHomeDir(), "config\\resumes.properties");
-    private static final String PROPS = "config\\resumes.properties";
+
+//    private static final String PROPS = "config\\resumes.properties";
+    private static final String PROPS = "/resumes.properties";
+
+
+
     private static final Config INSTANCE = new Config();
 
     private Properties props = new Properties();
