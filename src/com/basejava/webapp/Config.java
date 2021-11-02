@@ -10,16 +10,14 @@ import java.util.Properties;
 public class Config {
     //    private static final File PROPS = new File(getHomeDir(), "config\\resumes.properties");
 
-//    private static final String PROPS = "config\\resumes.properties";
+    //    private static final String PROPS = "config\\resumes.properties";
     private static final String PROPS = "/resumes.properties";
-
-
-
     private static final Config INSTANCE = new Config();
 
-    private Properties props = new Properties();
-    private File storageDir;
-    private SqlStorage sqlStorage;
+    //    private Properties props = new Properties();
+    private final File storageDir;
+    private final SqlStorage sqlStorage;
+//    private final Storage storage;
 
     public static Config get() {
         return INSTANCE;
@@ -28,6 +26,7 @@ public class Config {
     private Config() {
 //        try (InputStream is = new FileInputStream(PROPS)) {
         try (InputStream is = Config.class.getResourceAsStream(PROPS)) {
+            Properties props = new Properties();
             props.load(is);
             storageDir = new File(props.getProperty("storage.dir"));
             sqlStorage = new SqlStorage(props.getProperty("db.url"), props.getProperty("db.user"), props.getProperty("db.password"));
@@ -39,6 +38,10 @@ public class Config {
     public File getStorageDir() {
         return storageDir;
     }
+
+//    public Storage getStorage() {
+//        return storage;
+//    }
 
     public static SqlStorage getSqlStorage() {
         return INSTANCE.sqlStorage;

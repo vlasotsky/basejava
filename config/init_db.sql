@@ -9,7 +9,7 @@ CREATE TABLE contact
         id SERIAL,
         resume_uuid CHAR(36) NOT NULL REFERENCES resume(uuid) ON DELETE CASCADE,
         type TEXT NOT NULL,
-        values TEXT NOT NULL
+        value TEXT NOT NULL
     );
 
 -- ALTER TABLE resume OWNER TO postgres;
