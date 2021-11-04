@@ -38,9 +38,9 @@ h4 {
     border-radius: 20px;
 }
 
-h3 {
-    margin: 15px 0 0;
-}
+/*h3 {*/
+/*    margin: 15px 0 0;*/
+/*}*/
 
 ul {
     margin-top: 5px;
@@ -48,5 +48,5 @@ ul {
 }
 
 td {
-    alignment: top;
+    padding: 15px;
 }

@@ -35,7 +35,7 @@
             <tr>
                 <c:if test="${type.name() == 'OBJECTIVE'}">
                     <td><h3><c:out value="${type.title}"/></h3></td>
-                    <td>
+                    <td colspan="2">
                         <h3><%=((TextSection) section).getData()%>
                         </h3>
                     </td>
@@ -45,17 +45,17 @@
                 <c:choose>
                     <c:when test="${type.name() == 'PERSONAL'}">
                         <tr>
-                            <td colspan="2">
+                            <td>
                                 <h3>${type.title}</h3>
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <%=((TextSection) section).getData()%>
                             </td>
                         </tr>
                     </c:when>
                     <c:when test="${type.name() eq 'ACHIEVEMENTS' or type.name() eq 'QUALIFICATIONS'}">
-                        <h3>${type.title}</h3>
                         <tr>
+                            <td><h3>${type.title}</h3></td>
                             <td colspan="2">
                                 <ul>
                                     <c:forEach var="element" items="<%=((ListSection) section).getData()%>">
@@ -75,12 +75,11 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${empty organisation.link.url}">
-                                            <h3>${organisation.link.name}</h3>
+                                            <h4>${organisation.link.name}</h4>
                                         </c:when>
                                         <c:otherwise>
                                             <h3><a href="${organisation.link.url}">${organisation.link.name}</a></h3>
                                         </c:otherwise>
-
                                     </c:choose>
                                 </td>
                             </tr>

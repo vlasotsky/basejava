@@ -71,10 +71,12 @@ public class TestData {
         resume.setSection(SectionType.EDUCATION, new OrganizationSection(
                 new Organization(new Link("Coursera",
                         "https://www.coursera.org/course/progfun"), new Organization.Position(2013, 3, 2013, 5,
-                        "\"Functional Programming Principles in Scala\" by Martin Odersky"))
+                        "Functional Programming Principles in Scala by Martin Odersky"))
+//                        "\"Functional Programming Principles in Scala\" by Martin Odersky"))
                 , new Organization(new Link("Luxoft",
                 "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366"), new Organization.Position(2011, 3, 2011, 4,
-                "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""))
+                "Курс Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML."))
+//                "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""))
                 , new Organization(new Link("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
                 "http://www.ifmo.ru/"),
                 new Organization.Position(1987, 9, 1993, 7,

@@ -23,7 +23,6 @@
             <th></th>
         </tr>
         <tr>
-            <%--            <a href="resume?uuid=${UUID.randomUUID()}&action=add"><img src="img/add.png" width=50 height=40></a>--%>
         </tr>
         <c:forEach items="${resumes}" var="resume">
             <jsp:useBean id="resume" type="com.basejava.webapp.model.Resume"/>

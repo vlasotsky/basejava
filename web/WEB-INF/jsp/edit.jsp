@@ -43,7 +43,6 @@
         </c:forEach>
         <hr>
 
-
         <c:forEach var="type" items="<%=SectionType.values()%>">
             <c:set var="section" value="${resume.getSection(type)}"/>
             <jsp:useBean id="section" type="com.basejava.webapp.model.Section"/>
@@ -65,7 +64,6 @@
                 <c:when test="${type eq 'EXPERIENCE' or type eq 'EDUCATION'}">
                     <c:forEach var="organisation" items="<%=((OrganizationSection)section).getData()%>"
                                varStatus="counter">
-
                         <dl>
                             <dt>Organization name:</dt>
                             <dd><input name="${type}" type="text" value="${organisation.link.name}" size=75/></dd>
@@ -93,15 +91,15 @@
                                 </dl>
                                 <dl>
                                     <dt>Title:</dt>
-                                    <dd><input name="${type}${counter.index}title" type="text" value="${position.title}"
+                                    <dd><input name="${type}${counter.index}title" type="text"
+                                               value="${position.title.replaceAll("\"", "")}"
                                                size=75></dd>
                                 </dl>
                                 <dl>
                                     <dt>Description:</dt>
-                                        <%--                                    <dd><textarea name="${type}${counter}description" cols=75--%>
-                                        <%--                                                  rows=5><%=position.getDescription()%></textarea></dd>--%>
                                     <dd><textarea name="${type}${counter.index}description" cols=75
-                                                  rows=5>${position.description}</textarea></dd>
+                                                  rows=5>${position.description}</textarea>
+                                    </dd>
                                 </dl>
                             </c:forEach>
                         </div>
